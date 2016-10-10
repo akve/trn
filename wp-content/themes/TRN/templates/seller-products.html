@@ -1,0 +1,50 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+
+<div class="container">
+	<div layout="row"  ng-controller="SellerController as trns" layout-padding layout-wrap>
+		<h1 flex="100">Seller Products</h1>
+		<ul class="list-products" ng-init="trns.GetProducts()" flex="100">
+			<!-- loading products -->
+			<li class="loading" ng-if="trns.LoadingProducts">
+				<i class="fa fa-spin fa-spinner"></i>&nbsp; Loading...
+			</li>
+			<!-- no products -->
+			<li class="no-products" ng-if="!trns.LoadingProducts && trns.products.length == 0">
+				<i class="fa fa-exclamation-triangle"></i> &nbsp; No products
+			</li>
+			<!-- product list -->
+			<li ng-repeat="product in trns.products" layout="row" layout-wrap>
+				
+				<div class="product-img" flex="100" flex-gt-sm="20"><img ng-src="{{ product.img_med }}"></div>
+				
+				<div flex="100" flex-gt-sm="80" layout="column">
+					<div class="info" layout="row" layout-wrap>
+						<div class="product-info" layout="column" layout-align="space-around none" flex="100" flex-gt-sm="70" layout-padding>
+							<h3 style="margin-bottom: 0;">{{ product.product_name }}<small>{{ product.asin }}</small></h3>
+							<p style="max-height: 43px; overflow: hidden; text-overflow: ellipsis;">{{ product.description }}</p>
+							
+						</div>
+						
+						<div class="col-sm-4 col-md-4 col-lg-3 product-price" layout="row" layout-wrap layout-padding flex flex-gt-sm="30">
+							<span class="old-price" flex="40">{{ product.price | currency }}</span>
+							<span class="new-price" flex="50">{{ product.discount_price | currency }}</span>
+							<span class="" flex="100"><strong>Count:</strong> {{ product.coupon_count_used }} / {{ product.coupon_count_total }}</span>
+							<span class="" flex="100" ng-init="trns.CountDown(product.time_remaining, $index);"><strong>Time Remaining:</strong> {{ product.time_remaining_show }}</span>
+							
+						</div>
+					</div>
+					<div class="actions" layout="row" layout-align="end center" layout-padding>
+						<div class="edit-product" flex="50" flex-gt-sm="20">
+							<md-button class="orange-btn" href="/edit-product/?productid={{ product.id }}">Edit Product</md-button>
+						</div>
+						<span class='product-active' ng-class="product.active == 1 ? 'active' : 'inactive'" flex="50" flex-gt-sm="30" ng-click="trns.ChangeActivity(product);" >{{ product.active == 1 ? 'Active' : 'Inactive' }}</span>
+					</div>
+					
+				</div>
+				
+				
+			</li>
+		</ul>
+	</div>
+</div>

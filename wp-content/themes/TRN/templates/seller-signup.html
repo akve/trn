@@ -1,0 +1,59 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+<!-- Signup content -->
+<div class="ui container" ng-controller="LoginController as trnl">
+	<div layout="row" layout-padding>
+		<div flex-gt-sm="5"></div>
+		<form name="SignUp" layout="row" layout-align="center center" flex-gt-sm="90">
+			<md-card flex-gt-sm="100">
+				<md-card-title>
+					<md-card-title-text>
+						<span class="md-headline extra-padding">Create New Seller Account</span>
+					</md-card-title-text>
+				</md-card-title>
+				<md-card-content layout="row" layout-wrap>
+					<div flex="100" flex-gt-sm="50" class="extra-padding">
+						<div class="input-padding" >
+							<label>First Name</label>
+							<input name="Username" class="general-input" ng-model="trnl.account.FirstName" required >
+						</div>
+						<div class="input-padding" >
+							<label>Last Name</label>
+							<input name="Email" class="general-input" ng-model="trnl.account.LastName" required>
+						</div>
+						<div class="input-padding" >
+							<label>Company</label>
+							<input name="Password" class="general-input" type="text" required ng-model="trnl.account.Company">
+						</div>
+						<div class="input-padding">
+							<label>Phone</label>
+							<input name="RePassword" class="general-input" type="text" required ng-model="trnl.account.Phone">
+						</div>
+					</div>
+					<div flex="100" flex-gt-sm="50" class="extra-padding">
+						<div class="input-padding" >
+							<label>Username</label>
+							<input name="Username" class="general-input" ng-model="trnl.account.Username" required >
+						</div>
+						<div class="input-padding" >
+							<label>Email</label>
+							<input name="Email" class="general-input" ng-model="trnl.account.Email" required ng-pattern="/\S+@\S+\.\S+/">
+						</div>
+						<div class="input-padding" >
+							<label>Password</label>
+							<input name="Password" class="general-input" type="password" required ng-model="trnl.account.Password">
+						</div>
+						<div class="input-padding">
+							<label>Re-enter Password</label>
+							<input name="RePassword" class="general-input" type="password" required ng-model="trnl.account.RePassword">
+						</div>
+					</div>
+				</md-card-content>
+				<md-divider></md-divider>
+				<md-card-actions layout="row" layout-align="end center">
+					<md-button flex="100" class="orange-btn" ng-click="trnl.CreateSellerAccount();">Create Account</md-button>
+				</md-card-actions>
+			</md-card>
+		</form>
+	</div>
+</div>

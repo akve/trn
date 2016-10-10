@@ -1,0 +1,29 @@
+.view-product-button, .delete-seller-button, .aprove-seller, .pause-seller, .save-product,.pause-seller-promotion {
+    background: no-repeat center !important;
+    width: 25px !important;
+    height: 25px !important;
+    background-size: contain !important;
+    min-width: 0px !important;
+    min-height: 0px !important;
+	border: none !important;
+}
+
+.view-product-button{
+	background-image: url('../img/icons/1475704560_old-edit-find.png') !important;
+}
+
+.delete-seller-button{
+	background-image: url('../img/icons/1475704426_cross.png') !important;
+}
+
+.aprove-seller{
+	background-image: url('../img/icons/1475704377_check.png') !important;
+}
+
+.pause-seller, .pause-seller-promotion{
+	background-image: url('../img/icons/1475704318_button-pause_yellow.png') !important;
+}
+
+.save-product{
+	background-image: url('../img/icons/1475724728_floppy_disk_save.png') !important;
+}

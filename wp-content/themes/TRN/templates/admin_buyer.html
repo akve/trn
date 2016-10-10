@@ -1,0 +1,72 @@
+<!-- There's no head for this so we'll put it at the top of this file -->
+<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-sanitize.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-animate.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-aria.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css">
+<script>var basepath = "http://www.trustreviewnetwork.com/";var templatepath = 'http://www.trustreviewnetwork.com/wp-content/themes/TRN';</script>
+<script src="%%TEMPLATE_Directory%%/js/admin.app.php"></script>
+<style type="text/css">
+button.md-small {
+    font-size: 11px;
+    min-height: 26px;
+    line-height: 26px;
+}
+button.md-small.green {background-color: #4CAF50; color: #000}
+button.md-small.red {background-color: #E57373; color: #000}
+button.md-small.blue {background-color: #90CAF9;}
+.Pagination ul li {
+    display: inline-block;
+    padding: 8px;
+    background-color: #eee;
+    border: 1px solid #e0e0e0;
+    margin: 0 2px;
+    cursor: pointer;
+}
+md-backdrop.md-opaque {left:-20px; top:-20px;}
+.wp-admin {top: 32px !important;}
+.Pagination ul li.active {
+    background-color: #90CAF9;
+}
+</style>
+
+<div class="admin-body" ng-app="trnadmin" ng-controller="AdminBuyerController as abc" ng-cloak>
+	<h1>Manage Buyers</h1>
+	<p></p>
+	<table class="wp-list-table widefat fixed striped" ng-init="abc.getBuyers();">
+		<thead>
+			<tr>
+				<th width="80">Buyer ID</th>
+				<th width="240">Email</th>
+				<th width="80">AmazonID</th>
+				<th>Phone</th>
+				<th>Coupon Req.</th>
+				<th>Review Count</th>
+				<th class="actions" width="340">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-show="abc.loading">
+				<td colspan="7"><i class="fa fa-spin fa-spinner"></i>&nbsp; Loading Buyers...</td>
+			</tr>
+			<tr ng-repeat="buyer in abc.buyers">
+				<td>{{ buyer.id }}</td>
+				<td>{{ buyer.contact_email }}</td>
+				<td>{{ buyer.amazonid }}</td>
+				<td>{{ buyer.phone }}</td>
+				<td>{{ buyer.couponreq }}</td>
+				<td>{{ buyer.reviewcount }}</td>
+				<td>
+					<md-button class="md-raised md-small {{ buyer.status.color }}" ng-click="abc.ChangeStatus(buyer, $index);">{{ buyer.status.status_text }}</md-button>
+					<md-button class="md-raised md-small {{ buyer.blocked.color }}" ng-click="abc.ChangeBlockedStatus(buyer, $index);">{{ buyer.blocked.status_text }}</md-button>
+					<!--<md-button class="md-small blue" ng-click="abc.EditBuyer(buyer);">Edit</md-button>-->
+					<md-button class="md-small blue" ng-click="abc.DeleteBuyer(buyer, $index);">Delete</md-button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<rd-pagination ng-if="abc.buyers.length > 0" items="abc.buyers" target=".admin-body"></rd-pagination>
+</div>

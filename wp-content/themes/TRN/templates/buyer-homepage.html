@@ -1,0 +1,44 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+
+<div ng-controller="BuyerController as trnb" >
+	<form class="filtering-options" layout="row" ng-submit="trnb.FilterResults();">
+		<div class="container">
+			<input ng-model="trnb.Search" placeholder="Search Products...">
+			<button class="btn" type="submit">Search</button>
+		</div>
+	</form>
+	<div class="Welcome" ng-init="trnb.getNotification();" ng-show="trnb.NotificationMessage">
+		<p class="container message">{{ trnb.NotificationMessage }}</p>
+	</div>
+
+	<!-- Signup content -->
+	<div class="container" >
+		<div layout-padding>
+			<div layout="row">
+				<ul class="buyer-products">
+					<li class="col-sm-12 col-md-4 col-lg-3" ng-repeat="product in trnb.BuyerProducts" ng-if="product.active == 1">
+						<div class="img"><img ng-src="{{ product.img_large }}" class="md-card-image" alt="{{ product.product_name }} active:{{ product.active }} asc_sellers_Pause: {{trnb.BuyerProducts[$index].id}}"></div>
+						<md-card>
+							<md-card-title>
+								<md-card-title-text>
+									<span class="md-headline">{{ product.product_name }}</span>
+								</md-card-title-text>
+							</md-card-title>
+							<md-card-content>
+								<div class="price">
+									<div class="regular"><span>Retail Price:</span> <strike>{{ product.price | currency }}</strike></div>
+									<div class="current">{{ product.discount_price | currency }}</div>
+									<div class="discount">{{ trnb.PercentSavings(product) }}% OFF</div>
+								</div>
+							</md-card-content>
+							<md-card-actions layout="row" layout-align="end center">
+								<md-button ng-click="trnb.ViewProductDialog(product);" class="orange-btn">Product Details</md-button>
+							</md-card-actions>
+						</md-card>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

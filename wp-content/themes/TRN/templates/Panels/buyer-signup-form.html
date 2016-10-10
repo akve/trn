@@ -1,0 +1,92 @@
+<form name="SignUp" layout="row" layout-align="center start" class="buyer-signup-form" flex-gt-sm="60"  ng-controller="LoginController as trnl">
+			<md-card flex-gt-sm="90" >
+				<md-card-title>
+					<md-card-title-text>
+						<span class="md-headline">Buyer Signup</span>
+					</md-card-title-text>
+				</md-card-title>
+				<md-card-content>
+					<div class="input-padding" layout="row">
+						<md-input-container class="md-block" flex="70">
+							<label>Verify Phone</label>
+							<input required name="Phone" ng-model="trnl.Phone" ng-pattern="/\D?[\d{3}]\D?[\d{3}]\d?[\d{4}]/g" ng-disabled="trnl.PhoneSent">
+							<div ng-messages="SignUp.Phone.$error">
+								<div ng-message="pattern">Phone number should match pattern ###-###-####</div>
+								<div ng-message="required">You must enter a phone number to continue.</div>
+							</div>
+						</md-input-container>
+						
+					</div>
+					
+					<md-button flex="30" class="md-raised md-primary" ng-click="trnl.SendVerification(trnl.Phone)" ng-disabled="trnl.PhoneSent">
+							<span ng-if="!trnl.PhoneSentLoading">Get Started</span>
+							<span ng-if="trnl.PhoneSentLoading" class="button-loading"><i class="fa fa-spinner fa-spin"></i></span>
+					</md-button>
+					
+					
+					<div ng-if="trnl.PhoneSent">
+						<md-divider></md-divider>
+						<p layout-padding>Please enter the verification code you received.  If you do not receive a verification code within the next few minutes please contact us at </p>
+						<div class="input-padding CodeParent" layout="row">
+							<md-input-container class="md-block" flex="70">
+								<label>Verification Code</label>
+								<input required name="Code" ng-model="trnl.Code" ng-disabled="trnl.CodeVerified">
+								<div ng-messages="SignUp.Code.$error">
+									<div ng-message="required">You must enter a code to continue.</div>
+								</div>
+							</md-input-container>
+							<md-button flex="30" class="md-raised md-primary" ng-click="trnl.ConfirmVerification()" ng-disabled="trnl.CodeVerified">
+								<span ng-if="!trnl.CodeVerifiedLoading">Confirm</span>
+								<span ng-if="trnl.CodeVerifiedLoading" class="button-loading"><i class="fa fa-spinner fa-spin"></i></span>
+							</md-button>
+						</div>
+						<div class="error_box" ng-if="trnl.CodeVerifiedError">Incorrect Verification Code</div>
+					</div>
+					
+					<div ng-if="trnl.PhoneSent && trnl.CodeVerified">
+						<md-divider></md-divider>
+						<p layout-padding>Your phone number has been verified.  You can now create and account to see all the deals.</p>
+						<div class="input-padding" >
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Username</label>
+								<input name="Username" ng-model="trnl.account.Username" required >
+								<div ng-messages="SignUp.Username.$error">
+									<div ng-message="required">Username is required.</div>
+								</div>
+							</md-input-container>
+						</div>
+						<div class="input-padding" >
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Email</label>
+								<input name="Email" ng-model="trnl.account.Email" required ng-pattern="/\S+@\S+\.\S+/">
+								<div ng-messages="SignUp.Email.$error">
+									<div ng-message="pattern">Phone number Please enter a valid email address.</div>
+									<div ng-message="required">Email address is required.</div>
+								</div>
+							</md-input-container>
+						</div>
+						<div class="input-padding" >
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Password</label>
+								<input name="Password" type="password" required ng-model="trnl.account.Password">
+								<div ng-messages="SignUp.Password.$error">
+									<div ng-message="required">A password is required.</div>
+								</div>
+							</md-input-container>
+						</div>
+						<div class="input-padding">
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Re-enter Password</label>
+								<input name="RePassword" type="password" required ng-model="trnl.account.RePassword">
+								<div ng-messages="SignUp.RePassword.$error">
+									<div ng-message="required">Please re-enter your password.</div>
+								</div>
+							</md-input-container>
+						</div>
+					</div>
+				</md-card-content>
+				<md-card-actions layout="row" layout-align="end center" ng-if="trnl.PhoneSent && trnl.CodeVerified">
+					<md-button flex="40" class="md-raised md-primary" ng-click="trnl.CreateBuyerAccount();">Create Account</md-button>
+				</md-card-actions>
+			</md-card>
+		</form>

@@ -1,0 +1,53 @@
+<!-- There's no head for this so we'll put it at the top of this file -->
+<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-sanitize.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-animate.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-aria.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css">
+<script>var basepath = "http://www.trustreviewnetwork.com/";var templatepath = 'http://www.trustreviewnetwork.com/wp-content/themes/TRN';</script>
+<script src="%%TEMPLATE_Directory%%/js/admin.app.php"></script>
+<style type="text/css">
+button.md-small {
+    font-size: 11px;
+    min-height: 26px;
+    line-height: 26px;
+}
+button.md-small.green {background-color: #4CAF50; color: #000}
+button.md-small.red {background-color: #E57373; color: #000}
+button.md-small.blue {background-color: #90CAF9;}
+.success-message {
+    background-color: #DCEDC8;
+    margin: 10px;
+    padding: 10px;
+    width: 50%;
+}
+</style>
+
+<div class="admin-body" ng-app="trnadmin" ng-controller="AdminSettingsController as aset">
+	<h1>Manage TRN Settings</h1>
+	<p>Managea Specific TRN settings here.</p>
+	<table class="form-table" ng-init="aset.getSettings();">
+		<tbody>
+			<tr>
+				<th scope="row">
+					<label>Associate Code</label>
+				</th>
+				<td>
+					<input type="text" class="regular-text" ng-model="aset.settings.associatecode">
+					<p class="description">The associate tag that will be attached to the url of every product</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p class="submit">
+		<div class="success-message" ng-show="aset.Savedlabel">Your settings have been successfully updated</div>
+		<md-button ng-click="aset.saveSettings();" class="md-raised md-primary" >
+			<span ng-if="aset.loading">
+				<i class="fa fa-spin fa-spinner"></i>
+			</span>
+			<span ng-if="!aset.loading">Save Changes</span>
+		</md-button>
+	</p>
+</div>

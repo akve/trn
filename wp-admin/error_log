@@ -1,0 +1,3 @@
+[04-Feb-2016 19:36:09] WordPress database error Table 'perfedk3_trn.iwp_atn_product' doesn't exist for query SHOW FULL COLUMNS FROM `iwp_atn_product` made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), include('/themes/twentysixteen/functions.php')
+[05-Oct-2016 18:09:10] WordPress database error Table 'perfedk3_trn.table' doesn't exist for query SHOW FULL COLUMNS FROM `table` made by do_action('wp_ajax_kni_trn_aprove_seller'), call_user_func_array, ajax_kni_trn_aprove_seller
+[05-Oct-2016 18:10:46] WordPress database error Table 'perfedk3_trn.table' doesn't exist for query SHOW FULL COLUMNS FROM `table` made by do_action('wp_ajax_kni_trn_aprove_seller'), call_user_func_array, ajax_kni_trn_aprove_seller

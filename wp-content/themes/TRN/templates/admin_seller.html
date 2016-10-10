@@ -1,0 +1,120 @@
+<!-- There's no head for this so we'll put it at the top of this file -->
+<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-sanitize.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-animate.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-aria.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.3/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css">
+<script>var basepath = "http://www.trustreviewnetwork.com/";var templatepath = 'http://www.trustreviewnetwork.com/wp-content/themes/TRN';</script>
+<script src="%%TEMPLATE_Directory%%/js/admin.app.php"></script>
+<style type="text/css">
+button.md-small {
+    font-size: 11px;
+    min-height: 26px;
+    line-height: 26px;
+}
+button.md-small.green {background-color: #4CAF50; color: #000}
+button.md-small.red {background-color: #E57373; color: #000}
+button.md-small.blue {background-color: #90CAF9;}
+.Pagination ul li {
+    display: inline-block;
+    padding: 8px;
+    background-color: #eee;
+    border: 1px solid #e0e0e0;
+    margin: 0 2px;
+    cursor: pointer;
+}
+.Pagination ul li.active {
+    background-color: #90CAF9;
+}
+i.circle {
+    background-color: #eee;
+    padding: 2px;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+}
+/*.admin-body {
+    position: fixed;
+    left: 0;
+    padding: 10px 20px 0 180px;
+}*/
+md-backdrop.md-opaque {left:-20px; top:-20px;}
+.wp-admin {top: 32px !important;}
+i.circle.fa-check {border-color: #689F38; color: #689F38; background-color: #DCEDC8;}
+i.circle.fa-times {border-color: #D32F2F; color: #D32F2F; background-color: #FFCDD2;}
+</style>
+
+<div class="admin-body" ng-app="trnadmin" ng-controller="AdminSellerController as asc" ng-cloak>
+	<h1>Manage Sellers</h1>
+	<p></p>
+	<table class="wp-list-table widefat fixed striped" ng-init="asc.getSellers();"  ng-if="!asc.ProductsShow">
+		<thead>
+			<tr>
+				<th width="80">Seller ID</th>
+				<th>Email</th>
+				<th>Name</th>
+				<th>Phone</th>
+				<th class="actions" width="260">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="seller in asc.sellers" class="seller-tr">
+				<td class="seller-id">{{ seller.id }}</td>
+				<td>{{ seller.contact_email }}</td>
+				<td>{{ seller.FirstName }} {{ seller.LastName }}</td>
+				<td>{{ seller.Phone }}</td>
+				<td>
+					
+					
+					<md-button class="view-product-button md-small blue" ng-click="asc.ViewSellerProducts(seller);" title="View products" aria-label="button"></md-button>
+					
+					<md-button data-seller-id="{{ seller.id }}" class="aprove-seller" aria-label="button" title="Seller Approval" ></md-button>
+					<md-button data-seller-id="{{ seller.id }}" class="pause-seller" aria-label="button" title="Pause Seller Account" ></md-button>
+					
+					<md-button class="delete-seller-button md-small blue" ng-click="asc.DeleteSeller(seller, $index);" title="Delete seller" aria-label="button"></md-button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<rd-pagination ng-if="asc.sellers.length > 0 && !asc.ProductsShow" items="asc.sellers" target=".admin-body" ></rd-pagination>
+	<!-- products -->
+	<md-button class="md-raised md-small blue" ng-if="asc.ProductsShow" ng-click="asc.Return();">Return to Sellers</md-button>
+	<p ng-if="asc.ProductsShow">Please separate all keywords with a comma (,)</p>
+	<table class="wp-list-table widefat fixed striped" ng-if="asc.ProductsShow">
+		<thead>
+			<tr>
+				<th>ASIN</th>
+				<th>Product Name</th>
+				<th>Keywords</th>
+				<th>Reviews</th>
+				<th>Coupons(used/total)</th
+				<th class="actions" width="260">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="product in asc.products">
+				<td>{{ product.asin }}</td>
+				<td>{{ product.product_name }}</td>
+				<td>
+					<input ng-model="product.keywords" type="text">
+				</td>
+				<td>{{ product.reviews }}</td>
+				<td>{{ product.used_coupons }} / {{ product.total_coupons }}</td>
+				<td>
+					<md-button class="save-product md-small blue" ng-click="asc.editProduct(product);" title="Save product">
+						<span ng-if="product.loading"><i class="fa fa-spin fa-spinner"></i></span>
+					</md-button>
+					
+					<md-button data-product-id="{{ product.id }}" class="pause-seller-promotion" aria-label="button" title="Pause promotion" >
+					<span ng-if="product.loading"><i class="fa fa-spin fa-spinner"></i></span>
+					</md-button>
+					<i class="circle fa fa-check" ng-if="product.edited === true"></i>
+					<i class="circle fa fa-times" ng-if="product.edited === false"></i>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<rd-pagination ng-if="asc.products.length > 0 && asc.ProductsShow" items="asc.products" target=".admin-body"></rd-pagination>
+</div>

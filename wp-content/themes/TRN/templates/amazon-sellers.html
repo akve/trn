@@ -1,0 +1,51 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+<!-- Login content -->
+<div class="ui container" ng-controller="LoginController as trnl" layout="row">
+	<h1 flex="100" style="text-align: center;">Amazon Sellers</h1>
+	<div layout="row" layout-padding layout-align="center center">
+		<form flex-gt-sm="45" id="SellerSignup" ng-if="!trnl.FindPassword" name="LoginForm" layout="row" layout-align="center center" ng-submit="trnl.SellerLogin()">
+			<md-card flex-gt-sm="100">
+				<md-card-title>
+					<md-card-title-text>
+						<span class="md-headline">Login</span>
+					</md-card-title-text>
+				</md-card-title>
+				<md-card-content>
+					<input name="Username" class="general-input" ng-model="trnl.login.Username" required placeholder="Username">
+					<input name="Password" class="general-input" required type="password" ng-model="trnl.login.Password" placeholder="Password">
+					<div ng-if="trnl.LoginError" class="reset-message error" >
+						{{ trnl.LoginError }}
+					</div>
+					<p>Don't have an account? <a href="/seller-signup/">Create New Account</a><br><a class="forgot-password" href="#ForgotPassword" ng-click="trnl.FindPassword = true;">Forgot Password?</a></p>
+				</md-card-content>
+				<md-card-actions layout="row" layout-align="end center">
+					<md-button class="orange-btn" type="submit">Login</md-button>
+				</md-card-actions>
+			</md-card>
+		</form>
+
+		<form flex-gt-md="45"  ng-if="trnl.FindPassword" flex-md="55" flex="100" id="ForgotPassword" name="ForgotPassword" layout="row" layout-align="center center" ng-submit="trnl.ForgotPasswordSubmit()">
+			<md-card flex>
+				<md-card-title>
+					<md-card-title-text>
+						<span class="md-headline">Password Reset</span>
+					</md-card-title-text>
+				</md-card-title>
+				<md-card-content>
+					<p class="instructions">Enter your email information and instructions on how to reset your password will be sent to your email.</p>
+					<input name="Email" class="general-input" ng-model="trnl.forgot.Email" required >
+					<div ng-if="trnl.passwordResetMessage" class="reset-message {{ trnl.passwordResetMessageClass }}" >
+						{{ trnl.passwordResetMessage }}
+					</div>
+				</md-card-content>
+				<md-card-actions layout="row" layout-align="end center">
+					<md-button class="orange-btn" type="submit">
+						<span ng-if="trnl.ForgotPasswordLoading"><i class="fa fa-spin fa-spinner"></i></span>
+						<span ng-if="!trnl.ForgotPasswordLoading">Reset Password</span>
+					</md-button>				
+				</md-card-actions>
+			</md-card>
+		</form>
+	</div>
+</div>

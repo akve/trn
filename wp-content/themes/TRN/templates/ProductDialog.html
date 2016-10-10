@@ -1,0 +1,45 @@
+<md-dialog aria-label="product" ng-cloak>
+	<md-dialog-content>
+		<div class="md-dialog-content">
+			<!--<pre>{{ pc.product | json }}</pre>-->
+
+			<div class="col-sm-12 col-md-4 col-lg-4">
+			 <img ng-src="{{ pc.product.img_large }}" class="md-card-image" alt="{{ pc.product.product_name }}">
+			</div>
+			
+			<div class="col-sm-12 col-md-8 col-lg-8 dialog-product-info">
+				<h1>{{ pc.product.product_name }}</h1>
+				<p>{{ pc.product.description }}</p>				
+					
+					<div class="price">
+						<div class="regular"><span>Retail Price:</span> <strike>{{ pc.product.price | currency }}</strike></div>
+						<div class="current">{{ pc.product.discount_price | currency }}</div>
+						<div class="discount">{{ pc.PercentSavings(pc.product) }}% OFF</div>
+					</div>
+					
+										
+				<md-button ng-click="pc.RequestProduct();" class="orange-btn">
+					<span ng-if="pc.RequestLoading"><i class="fa fa-spin fa-spinner"></i></span>
+					<span ng-if="!pc.RequestLoading">Request Product</span>
+				</md-button>
+				
+				<md-button href="{{ pc.generateLink(pc.product) }}" target="_blank" class="view-amazon-btn">View On Amazon</md-button>
+
+				<md-button ng-click="pc.ConfirmReview();" class="orange-btn">
+					<span ng-if="pc.ConfirmReviewLoading"><i class="fa fa-spin fa-spinner"></i></span>
+					<span ng-if="!pc.ConfirmReviewLoading">Confirm Review</span>
+				</md-button>
+
+			
+			<div class="result-message {{ pc.RequestResultsClass }}" ng-if="pc.RequestResults">
+				{{ pc.RequestResults }}
+			</div>
+					
+			</div>
+		</div>
+		
+	</md-dialog-content>
+	 <md-dialog-actions layout="row" class="layout-row">
+	  <md-button ng-click="pc.hide();">close</md-button>
+	 </md-dialog-actions>
+</md-dialog>

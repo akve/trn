@@ -1,0 +1,116 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+
+<div class="container">
+	<div layout="row" ng-controller="SellerController as trns" layout-padding layout-wrap>
+		<h1 flex="100">Edit Product</h1>
+		<form name="EditProduct" flex ng-init="trns.GetProductEdit();">
+			<div layout="row" class="edit-product" layout-padding flex>
+				<!-- Image Column -->
+				<div flex="25" layout="row" layout="row" layout-align="center start" layout-wrap>
+					<div class="product-image-container" flex ng-if="!trns.product.images">
+						<div class="material-icons" flex>photo</div>
+					</div>
+					<div class="product-image-container" flex ng-if="trns.product.images">
+						<img ng-src="{{ trns.product.images.med }}">
+					</div>
+				</div>
+				<!-- Form Column -->
+				<div flex="75" layout="row" layout-padding layout-wrap>
+					<div flex="100" layout="row" layout-wrap>
+						<md-input-container class="md-block" flex-gt-sm="40">
+							<label>Product ASIN</label>
+							<input name="ASIN" ng-model="trns.product.ASIN" required >
+							<div ng-messages="EditProduct.ASIN.$error">
+								<div ng-message="required">ASIN is required.</div>
+							</div>
+						</md-input-container>
+						<md-button class="orange-btn" ng-click="trns.ASINSearch(trns.product.ASIN);">
+							<span ng-if="trns.ASINLoading"><i class="fa fa-spin fa-spinner"></i></span>
+							<span ng-if="!trns.ASINLoading">ASIN search</span>
+						</md-button>
+					</div>
+					<div flex="100" layout="row" layout-wrap>
+						<md-input-container class="md-block no-margin" flex-gt-sm="70">
+							<label>Title</label>
+							<input name="Title" ng-model="trns.product.Title" required ng-disabled="!trns.product.populated">
+						</md-input-container>
+					</div>
+					<div flex="100" layout="row" layout-wrap>
+						<md-input-container class="md-block no-margin" flex>
+							<label>Description</label>
+							<textarea name="Description" rows="5" ng-model="trns.product.Description" required ng-disabled="!trns.product.populated" style="height: 200px"></textarea>
+						</md-input-container>
+					</div>
+					<!--<div flex="100" layout="row" layout-wrap>
+						<md-input-container class="md-block no-margin" flex-gt-sm="70">
+							<label>Product URL</label>
+							<input name="Title" ng-model="trns.product.CustomURL" required ng-disabled="!trns.product.populated" placeholder="{{ trns.product.CustomURLDefault }}">
+							<div class="hint">Add any tracking codes or keywords to the product URL</div>
+						</md-input-container>
+					</div>-->
+					<div flex="100" layout="row" layout-wrap>
+						<md-input-container class="md-block no-margin" flex="40">
+							<md-icon>
+								<i class="material-icons">attach_money</i>
+							</md-icon>
+							<label>Price</label>
+							<input name="Price" ng-model="trns.product.Price" required ng-disabled="!trns.product.populated">
+						</md-input-container>
+						<md-input-container class="md-block no-margin" flex="40">
+							<md-icon>
+								<i class="material-icons">attach_money</i>
+							</md-icon>
+							<label>Price After Discount</label>
+							<input name="PAD" ng-model="trns.product.PAD" required ng-disabled="!trns.product.populated">
+						</md-input-container>
+					</div>
+					<div flex="100" layout="row" layout-wrap>
+						<md-datepicker ng-model="trns.product.startdate" md-placeholder="Start date"></md-datepicker>
+					</div>
+					<div flex="100" layout="row" layout-wrap>
+						<md-datepicker ng-model="trns.product.enddate" md-placeholder="End date"></md-datepicker>
+					</div>
+					<span flex="100" style="height: 20px;"></span>
+					<!--<div flex="100" layout="row" layout-wrap>
+						<md-input-container class="md-block no-margin" flex-gt-sm="70">
+							<label>Support Email</label>
+							<input name="SupportEmail" ng-model="trns.product.SupportEmail" required ng-disabled="!trns.product.populated">
+							<div class="hint">for Reviewers to contact you if coupon problems arise</div>
+						</md-input-container>
+					</div>-->
+					<div flex="100" layout="row" layout-wrap>
+						<md-input-container class="md-block no-margin" flex>
+							<label>List of Single-Use Coupon Codes</label>
+							<textarea name="SUCC" rows="5" ng-model="trns.product.SUCC" required ng-disabled="!trns.product.populated" style="height: 200px"></textarea>
+							<div class="hint">Use a new line to separate all coupon codes</div>
+							<div ng-messages="EditProduct.SUCC.$error">
+								<div ng-message="required">You need to add coupons to this product</div>
+							</div>
+						</md-input-container>
+					</div>
+					<div class="extra-padding" style="margin-bottom: 20px;">
+						Coupon Count : {{ trns.countCoupons() }}<br><br>
+					</div>
+					<div flex="100" layout="row" layout-wrap>
+						<md-input-container class="md-block no-margin" flex>
+							<label>Notes to reviewer</label>
+							<textarea name="NTR" rows="5" ng-model="trns.product.NTR" ng-disabled="!trns.product.populated" style="height: 200px"></textarea>
+							<div class="hint">eg. Please leave a disclaimer that you received this discounted product in exchange for a review.</div>
+						</md-input-container>
+					</div>
+					<div ng-if="trns.AddingError">
+						{{ trns.AddingError }}
+					</div>
+					
+					<div class="edit-product-btn">
+					<md-button class="orange-btn" ng-click="trns.ProcessProduct(trns.product);">
+						<span ng-if="trns.AddingLoading"><i class="fa fa-spin fa-spinner"></i></span>
+						<span ng-if="!trns.AddingLoading">Save</span>
+					</md-button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

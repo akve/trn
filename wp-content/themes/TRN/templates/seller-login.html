@@ -1,0 +1,47 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+<!-- Login content -->
+<div class="ui container" ng-controller="LoginController as trnl" layout-padding>
+	<div layout="row" layout-padding>
+		<div flex-gt-sm="50">
+			<h3>Seller Login</h3>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan est enim, sed tempor dui auctor at. Nulla sagittis lorem et magna lacinia finibus. Integer vitae nisi imperdiet, varius nulla at, fringilla nisl. Nam pulvinar vulputate urna sed vehicula. Maecenas ligula eros, venenatis ac scelerisque et, ultricies vitae turpis. Fusce faucibus enim purus, vitae gravida quam luctus ut. Phasellus ultrices ex in risus tempor, nec ornare diam interdum. Ut arcu odio, efficitur non dui in, consequat lacinia dui. Etiam a feugiat velit. In hac habitasse platea dictumst.</p>
+			<p>Cras felis justo, ornare sit amet facilisis sit amet, efficitur ut felis. Fusce varius tellus neque, posuere placerat diam cursus ac. Proin ac aliquam lorem. Ut quis metus diam. Etiam condimentum turpis augue, ac iaculis ligula mattis id. Vestibulum elementum arcu vitae justo elementum blandit. Etiam volutpat metus in mollis ornare. Quisque mattis vel erat et ornare. Proin eleifend sodales neque, eget suscipit sapien pretium eu. Sed a arcu non urna placerat pellentesque ac eu lorem. Nam mi elit, ultricies id tortor vitae, pulvinar ultricies mauris. Integer dictum felis a faucibus vulputate. Nam et purus velit. Nulla sapien eros, facilisis vel tincidunt ac, fermentum a magna. Sed ligula metus, condimentum non justo eget, blandit placerat dui.</p>
+		</div>
+		<form flex-gt-sm="50" name="LoginForm" layout="row" layout-align="center center" ng-submit="trnl.SellerLogin()">
+			<md-card flex-gt-sm="90">
+				<md-card-title>
+					<md-card-title-text>
+						<span class="md-headline">Login</span>
+					</md-card-title-text>
+				</md-card-title>
+				<md-card-content>
+					<div class="input-padding" >
+						<md-input-container class="md-block" flex-gt-sm>
+							<label>Username or Email</label>
+							<input name="Username" ng-model="trnl.login.Username" required >
+							<div ng-messages="LoginForm.Username.$error">
+								<div ng-message="required">Username is required.</div>
+							</div>
+						</md-input-container>
+					</div>
+					<div class="input-padding" >
+						<md-input-container class="md-block" flex-gt-sm>
+							<label>Password</label>
+							<input name="Password" required type="password" ng-model="trnl.login.Password">
+							<div ng-messages="LoginForm.Password.$error">
+								<div ng-message="required">A password is required.</div>
+							</div>
+						</md-input-container>
+					</div>
+				</md-card-content>
+				<md-card-actions layout="row" layout-align="end center">
+					<md-button class="md-primary" type="submit">
+						<span ng-if="trnl.LoginLoading"><i class="fa fa-spin fa-spinner"></i></span>
+						<span ng-if="!trnl.LoginLoading">Login</span>
+					</md-button>
+				</md-card-actions>
+			</md-card>
+		</form>
+	</div>
+</div>

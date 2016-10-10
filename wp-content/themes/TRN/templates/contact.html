@@ -1,0 +1,43 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+<div class="ui container" ng-controller="LoginController as trnl">	
+	<div layout="row" layout-padding>
+		<h1>Contact</h1>
+	</div>
+	<div layout="row" layout-wrap>
+		<div flex class="contact-form" flex-xs="100">
+			<form layout="row" layout-wrap ng-submit="trnl.ContactUs();">
+				<md-input-container flex="100">
+				<label>First Name</label>
+				<input type="text" ng-model="trnl.ContactForm.FirstName"/>
+				</md-input-container>
+				<md-input-container flex="100">
+				<label>Last Name</label>
+				<input type="text" ng-model="trnl.ContactForm.LastName"/>
+				</md-input-container>
+				<md-input-container flex="100">
+				<label>Email Address</label>
+				<input type="text" ng-model="trnl.ContactForm.Email"/>
+				</md-input-container>
+				<md-input-container flex="100">
+				<label>Notes</label>
+				<textarea ng-model="trnl.ContactForm.Notes"></textarea>
+				</md-input-container>
+				<div ng-if="trnl.message" flex="100">
+					<span class="result-message {{ trnl.message.class }}">{{ trnl.message.message }}</span>
+				</div>
+				<md-button class="orange-btn" type="submit">
+					<span ng-if="trnl.Loading"><i class="fa fa-spin fa-spinner"></i></span>
+					<span ng-if="!trnl.Loading">Submit</span>
+				</md-button>
+			</form>
+		</div>
+		<md-card flex class="mailing-list">
+			<md-card-content>
+				<h1>Mailing List</h1>
+				<p>333 Washington Blvd. #66,<br>Marina Del Rey,<br>CA 90291, USA</p>
+			</md-card-content>
+		</md-card>
+	</div>
+</div>
+<!--<div template-panel ver="footer" class="absolute-bottom"></div>-->

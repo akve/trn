@@ -1,0 +1,11 @@
+<div class="Pagination">
+    <ul>
+        <li ng-click="ChangePage(0);"><a><i class="fa fa-angle-double-left"></i></a></li>
+        <li ng-click="ChangePage(currentpage);"><a><i class="fa fa-angle-left"></i></a></li>
+        <li  ng-click="ChangePage(page);" ng-repeat="page in Pages" ng-class="GetActive(page);">
+            <a>{{ page }}</a>
+        </li>
+        <li ng-click="ChangePage(currentpage+2);"><a><i class="fa fa-angle-right"></i></a></li>
+        <li ng-click="ChangePage(maxpages);"><a><i class="fa fa-angle-double-right"></i></a></li>
+    </ul>
+</div>

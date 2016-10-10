@@ -1,0 +1,23 @@
+<div class="header-top md-whiteframe-3dp" ng-controller="HeaderController as trnh">
+	<div class="container">
+		<div template-panel ver="TRN-logo"></div>
+		
+		<ul class="header-menu">
+			<li class="header-menu-item animated fadeIn {{ item.buttonclass }}" ng-repeat="item in trnh.menu">
+				<a ng-href="{{ trnh.basepath }}{{ item.link }}">{{ item.name }}</a>
+			</li>
+		</ul>
+		
+		<div class="mobile-menu" ng-model="collapsed" ng-click="collapsed=!collapsed">
+			<i class="fa fa-bars"></i>			
+		</div>
+		
+		<ul class="mobile-menu" ng-show="collapsed">
+			<li class="header-menu-item animated fadeIn {{ item.buttonclass }}" ng-repeat="item in trnh.menu">
+				<a ng-href="{{ trnh.basepath }}{{ item.link }}">{{ item.name }}</a>
+			</li>
+		</ul>
+		
+		
+	</div>
+</div>

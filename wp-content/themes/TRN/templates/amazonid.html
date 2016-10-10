@@ -1,0 +1,36 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+
+<div ng-controller="BuyerController as trnb" >
+	<div class="container" >
+		<div layout-padding>
+			<h1>Link Amazon Profile</h1>
+			<p>In order to use Trust Review Network, you must link your Amazon profile to your Trust Review Network profile. This does not give us access to your Amazon account, it only allows us to verify that you are a legitimate Amazon shopper.</p>
+			<h3>Where do I find my Amazon ID?</h3>
+			<p>Go to <a href="http://www.amazon.com/">Amazon.com</a> if prompted, login. Once you have arrived on your <a href="https://www.amazon.com/gp/profile/">Profile</a>, copy the url and paste it in the input on the left.  Your amazon look like this : https://www.amazon.com/gp/profile/<strong>{ AMAZONID }</strong>.</p>
+			<p>Enter your Amazon ID below:</p>
+		</div>
+
+		<form flex-gt-md="45" flex-md="55" flex="100" layout="row" layout-align="left center" ng-submit="trnb.SaveBuyer(trnb.buyer);">
+			<md-card flex>
+				<md-card-title>
+					<md-card-title-text>
+						<span class="md-headline">Amazon ID</span>
+					</md-card-title-text>
+				</md-card-title>
+				<md-card-content>
+					<input name="amazonid" class="general-input" ng-model="trnb.buyer.amazonid" required placeholder="Amazon ID">
+					<div ng-if="trnb.LoginError" class="reset-message error" >
+						{{ trnb.LoginError }}
+					</div>
+				</md-card-content>
+				<md-card-actions layout="row" layout-align="end center">
+					<md-button class="orange-btn" type="submit">
+						<span ng-if="trnb.Loading"><i class="fa fa-spin fa-spinner"></i></span>
+						<span ng-if="!trnb.Loading">Submit</span>
+					</md-button>				
+				</md-card-actions>
+			</md-card>
+		</form>
+	</div>
+</div>
