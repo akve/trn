@@ -20,17 +20,16 @@
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-
-define('DB_NAME', 'trn');
+define('DB_NAME', 'perfedk3_trn');
 
 /** MySQL database username */
-define('DB_USER', 'root');
+define('DB_USER', 'perfedk3_trn');
 
 /** MySQL database password */
-define('DB_PASSWORD', 'root');
+define('DB_PASSWORD', '%Q8[oT0_g8B!');
 
 /** MySQL hostname */
-define('DB_HOST', '127.0.0.1');
+define('DB_HOST', 'localhost');
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -78,21 +77,7 @@ $table_prefix  = 'wp_';
  *
  * @link https://codex.wordpress.org/Debugging_in_WordPress
  */
-
 define('WP_DEBUG', false);
-// Enable Debug logging to the /wp-content/debug.log file
-define( 'WP_DEBUG_LOG', true );
-
-// Disable display of errors and warnings 
-define( 'WP_DEBUG_DISPLAY', true );
-@ini_set( 'display_errors', 0 );
-
-//define('GLOBAL_BASE','http://www.trustreviewnetwork.com/');
-define('GLOBAL_BASE','http://localhost/');
-
-// Use dev versions of core JS and CSS files (only needed if you are modifying these core files)
-define( 'SCRIPT_DEBUG', true );
-/* That's all, stop editing! Happy blogging. */
 
 /* That's all, stop editing! Happy blogging. */
 
