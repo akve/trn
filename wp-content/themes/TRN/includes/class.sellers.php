@@ -186,7 +186,7 @@ $html .= '</table><br /><center>'.$pageiation.'</center>';
 }
 
 
-function seller_coupon_insert($_POST)
+function seller_coupon_insert($_POSTLOCAL)
 {
   global $wpdb;
   $user_ID = get_current_user_id();
@@ -194,8 +194,8 @@ function seller_coupon_insert($_POST)
   $seller_id  = $wpdb->get_results( $wpdb->prepare( "SELECT id FROM `wp_atn_sellers` Where `user_id` = %s", $user_ID));
   $seller_id = $seller_id[0]->id;
 
-  $campaign_id = $_POST['campaign_id'];
-  $coupon = $_POST['coupon_code'];
+  $campaign_id = $_POSTLOCAL['campaign_id'];
+  $coupon = $_POSTLOCAL['coupon_code'];
   $status = 'enabled';
   $t = time();
 
@@ -208,7 +208,7 @@ function seller_coupon_insert($_POST)
   exit();
 }
 
-function seller_remove_coupon($_POST)
+function seller_remove_coupon($_POSTLOCAL)
 {
 // from ajax
   global $wpdb;
@@ -217,7 +217,7 @@ function seller_remove_coupon($_POST)
   $seller_id  = $wpdb->get_results( $wpdb->prepare( "SELECT id FROM `wp_atn_sellers` Where `user_id` = %s", $user_ID));
   $seller_id = $seller_id[0]->id;
 
-  $coupon_id = $_POST['id'];
+  $coupon_id = $_POSTLOCAL['id'];
 
   $status = 'removed';
   $t = time();
@@ -229,7 +229,7 @@ function seller_remove_coupon($_POST)
 }
 
 
-function seller_upload($_POST,$_FILES)
+function seller_upload($_POSTLOCAL,$_FILESLOCAL)
 {
   global $wpdb;
   $user_ID = get_current_user_id();
@@ -237,14 +237,14 @@ function seller_upload($_POST,$_FILES)
   $seller_id  = $wpdb->get_results( $wpdb->prepare( "SELECT id FROM `wp_atn_sellers` Where `user_id` = %s", $user_ID));
   $seller_id = $seller_id[0]->id;
 
-  if (isset($_POST['submit'])) {
-          if (is_uploaded_file($_FILES['filename']['tmp_name'])) {
+  if (isset($_POSTLOCAL['submit'])) {
+          if (is_uploaded_file($_FILESLOCAL['filename']['tmp_name'])) {
   //            echo "<h1>" . "File ". $_FILES['filename']['name'] ." uploaded successfully." . "</h1>";
   //            echo "<h2>Displaying contents:</h2>";
-              readfile($_FILES['filename']['tmp_name']);
+              readfile($_FILESLOCAL['filename']['tmp_name']);
          }
           //Import uploaded file to Database
-         $handle = fopen($_FILES['filename']['tmp_name'], "r");
+         $handle = fopen($_FILESLOCAL['filename']['tmp_name'], "r");
           while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 
 // check if coupon code exists.
@@ -381,7 +381,7 @@ exit();
     }
 
 
-    function seller_add_product_post($_POST)
+    function seller_add_product_post($_POSTLOCAL)
     {
 
         global $wpdb;
@@ -391,7 +391,7 @@ exit();
         $seller_id = new stdClass();
         $seller_id  = $wpdb->get_results( $wpdb->prepare( "SELECT id FROM `wp_atn_sellers` Where `user_id` = %s", $user_ID));
         $seller_id = $seller_id[0]->id;
-       $asin = $_POST['asin'];
+       $asin = $_POSTLOCAL['asin'];
         require_once('class.asin.php');
           $asin_obj = new Asin();
             require_once('class.asin.php');
@@ -412,7 +412,7 @@ exit();
     }
 
 
-    function seller_edit_product_post($_POST)
+    function seller_edit_product_post($_POSTLOCAL)
     {
         global $wpdb;
         $user_ID = get_current_user_id();
@@ -423,11 +423,11 @@ exit();
         $seller_id = $seller_id[0]->id;
 
 
-        $asin = filter_var(trim($_POST['asin']), FILTER_SANITIZE_EMAIL);
-        $product_name = filter_var(trim($_POST['product_name']),FILTER_SANITIZE_STRING);
-        $product_image = filter_var(trim($_POST['product_image']),FILTER_SANITIZE_URL);
-        $description = filter_var(trim($_POST['description']),FILTER_SANITIZE_STRING);
-        $price = filter_var(trim($_POST['price']),FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);     //
+        $asin = filter_var(trim($_POSTLOCAL['asin']), FILTER_SANITIZE_EMAIL);
+        $product_name = filter_var(trim($_POSTLOCAL['product_name']),FILTER_SANITIZE_STRING);
+        $product_image = filter_var(trim($_POSTLOCAL['product_image']),FILTER_SANITIZE_URL);
+        $description = filter_var(trim($_POSTLOCAL['description']),FILTER_SANITIZE_STRING);
+        $price = filter_var(trim($_POSTLOCAL['price']),FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);     //
         $t = time();
 
 
@@ -649,7 +649,7 @@ exit();
         return $html;
     }
 
-        function seller_update_campaign_post($_POST)
+        function seller_update_campaign_post($_POSTLOCAL)
         {
             global $wpdb;
             $user_ID = get_current_user_id();
@@ -658,20 +658,20 @@ exit();
             $seller_id  = $wpdb->get_results( $wpdb->prepare( "SELECT id FROM `wp_atn_sellers` Where `user_id` = %s", $user_ID));
             $seller_id = $seller_id[0]->id;
 
-            $id = filter_var(trim($_POST['id']),FILTER_SANITIZE_NUMBER_INT);
+            $id = filter_var(trim($_POSTLOCAL['id']),FILTER_SANITIZE_NUMBER_INT);
 
             //$startdate = filter_var(trim($_POST['startdate']),FILTER_SANITIZE_NUMBER_INT);
             // odd - the date is decrementing one day on update. Lets increment one day here to compensate
-            $startdate = strtotime("".$_POST['StartDay'] . "-" . $_POST['StartMonth'] . "-" . $_POST['StartYear']." + 1 day");
-            $enddate = strtotime("".$_POST['EndDay'] . "-" . $_POST['EndMonth'] . "-" . $_POST['EndYear']." + 1 day");
+            $startdate = strtotime("".$_POSTLOCAL['StartDay'] . "-" . $_POST['StartMonth'] . "-" . $_POST['StartYear']." + 1 day");
+            $enddate = strtotime("".$_POSTLOCAL['EndDay'] . "-" . $_POST['EndMonth'] . "-" . $_POST['EndYear']." + 1 day");
 /*
             $startdate = filter_var(trim($_POST['startdate']),FILTER_SANITIZE_NUMBER_INT);
             $enddate = filter_var(trim($_POST['enddate']),FILTER_SANITIZE_NUMBER_INT);
 */
-            $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+            $email = filter_var(trim($_POSTLOCAL['email']), FILTER_SANITIZE_EMAIL);
 
-            $discount = filter_var(trim($_POST['discount']),FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-            $notes = filter_var(trim($_POST['notes']),FILTER_SANITIZE_STRING);
+            $discount = filter_var(trim($_POSTLOCAL['discount']),FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
+            $notes = filter_var(trim($_POSTLOCAL['notes']),FILTER_SANITIZE_STRING);
             $t = time();
 
 
@@ -746,7 +746,7 @@ exit();
     }
 
 
-    function seller_create_campaign_post($_POST)
+    function seller_create_campaign_post($_POSTLOCAL)
     {
         global $wpdb;
         $user_ID = get_current_user_id();
@@ -761,16 +761,16 @@ exit();
 
 
         //$startdate = filter_var(trim($_POST['startdate']),FILTER_SANITIZE_NUMBER_INT);
-        $startdate = strtotime("".$_POST['StartDay'] . "-" . $_POST['StartMonth'] . "-" . $_POST['StartYear']."");
+        $startdate = strtotime("".$_POSTLOCAL['StartDay'] . "-" . $_POSTLOCAL['StartMonth'] . "-" . $_POSTLOCAL['StartYear']."");
 
-        $enddate = strtotime("".$_POST['EndDay'] . "-" . $_POST['EndMonth'] . "-" . $_POST['EndYear']."");
+        $enddate = strtotime("".$_POSTLOCAL['EndDay'] . "-" . $_POSTLOCAL['EndMonth'] . "-" . $_POSTLOCAL['EndYear']."");
 
-        $asin = filter_var(trim($_POST['asin']), FILTER_SANITIZE_STRING);
-        $email = filter_var(trim($_POST['email']),FILTER_SANITIZE_EMAIL);
+        $asin = filter_var(trim($_POSTLOCAL['asin']), FILTER_SANITIZE_STRING);
+        $email = filter_var(trim($_POSTLOCAL['email']),FILTER_SANITIZE_EMAIL);
 
 
-        $discount = filter_var(trim($_POST['discount']),FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-        $notes = filter_var(trim($_POST['notes']),FILTER_SANITIZE_STRING);
+        $discount = filter_var(trim($_POSTLOCAL['discount']),FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
+        $notes = filter_var(trim($_POSTLOCAL['notes']),FILTER_SANITIZE_STRING);
         $t = time();
 
       $q = "INSERT INTO  `perfedk3_trn`.`wp_atn_campaign`  (

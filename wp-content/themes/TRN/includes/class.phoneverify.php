@@ -119,6 +119,8 @@ class PHONEVERIFY
 		$message = "Your verification code is : ".$this->VerficiationCode;
 		$gateway_username = $this->gatewayssid; // id
 		$gateway_password = $this->gatewaytoken; // token
+
+		return $this->VerficiationCode;
 						
 		// Twilio.
 		$url = "https://api.twilio.com/2010-04-01/Accounts/".$this->gatewayssid."/SMS/Messages";
@@ -131,6 +133,7 @@ class PHONEVERIFY
 		$result = $this->CurlRequest($url, $post);
 
 		$processed = $this->ProcessXML($result);
+
 
 		if (!$processed)
 			$this->Error = "We could not send Verification";

@@ -42,7 +42,7 @@
 	<!-- local javascript -->
 	<script>
 		// important for all relative pathnames
-		var basepath = "http://www.trustreviewnetwork.com/";
+		var basepath = "<?php echo GLOBAL_BASE?>";
 		var templatepath = '<?php echo get_template_directory_uri(); ?>';
 	</script>
 	<script type="text/javascript" src="<?php echo get_template_directory_uri(); ?>/js/ajs.sitecontroller.js"></script>

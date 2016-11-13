@@ -179,8 +179,8 @@ ul.buyer-products md-card md-card-title { padding: 16px; height: 75px; overflow:
 .dialog-product-info .price .regular { font-size: 19px; margin-bottom: 10px; color: #999; }
 .dialog-product-info .price .current { font-size: 31px; color: #333; font-weight: bold; letter-spacing: -1px; display: inline-block; float: left; margin: 8px 5px 0 0; }
 .dialog-product-info .price .discount { font-size: 19px; color: #fff; font-weight: 600; background: #008a00; display: inline-block; padding: 8px 15px 10px; margin: 0 10px; }
-.dialog-product-info .orange-btn { font-size: 15px; max-height: 45px !important; line-height: 45px; letter-spacing: 0; width: auto; padding: 0 30px; float: left; margin: 0 10px 0 0; }
-.dialog-product-info .view-amazon-btn { font-size: 15px; max-height: 45px !important; line-height: 45px; letter-spacing: 0; width: auto; padding: 0 30px; float: left; margin: 0 10px 0 0; background: #eee; font-weight: 600; }
+.dialog-product-info .orange-btn { font-size: 15px; max-height: 45px !important; line-height: 45px; letter-spacing: 0; width: auto; padding: 0 30px; float: left; margin: 5px 5px 5px 0; }
+.dialog-product-info .view-amazon-btn { font-size: 15px; max-height: 45px !important; line-height: 45px; letter-spacing: 0; width: auto; padding: 0 30px; float: left; margin: 5px 5px 5px 0; background: #eee; font-weight: 600; }
 md-dialog md-dialog-actions { border-top: 1px solid #eee !important; }
 md-dialog .md-dialog-content { display: inline-block; }
 md-dialog .result-message { margin-top: 20px; font-weight: 600; }

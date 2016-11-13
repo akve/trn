@@ -70,8 +70,8 @@
 	.hero-banner .intro-text .steps p {float: none; width: auto; display: inline-block; }
 	
 	md-dialog .md-dialog-content img {width: 100%;}
-	.dialog-product-info .view-amazon-btn {width: 100%; margin: 0 0 5px;}
-	.dialog-product-info .orange-btn {width: 100%; margin-bottom: 10px;}
+	.dialog-product-info .view-amazon-btn {margin: 5px 5px 5px 0;}
+	.dialog-product-info .orange-btn {width: 100%; margin: 5px 5px 5px 0};
 	ul.buyer-products {margin: 0;}
 	ul.buyer-products md-card {margin: 0;}
 	ul.buyer-products .col-lg-3 {width: 100%; padding: 0;}

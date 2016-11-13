@@ -328,9 +328,10 @@ class BUYERACCOUNT
 
 		$body = $email->SetEmailTemplate('ProductRequest', $vars);
 		$subject = "TRN: Requested Product Promo Code";
-		$email->Send($user['contact_email'], $body, $subject, "trn@trustreviewnetwork.com");
+		$resp = $email->Send($user['contact_email'], $body, $subject, "trn@trustreviewnetwork.com");
+		//var_dump($GLOBALS['mailed']) ;
 
-		return true;
+		return $resp;
 	}
 
 	public function ConfirmReview()

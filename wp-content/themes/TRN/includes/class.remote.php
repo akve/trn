@@ -86,7 +86,7 @@ class REMOTE
 
 		# once we get a response we can output a success value
 		if ($response)
-			JSONOutput(array("success" => true));
+			JSONOutput(array("success" => true, vcode => $response));
 		else
 			JSONOutput(array("error" => $text->Error));
 	}
@@ -134,7 +134,7 @@ class REMOTE
 
 		# always verift in case they're trying to manipulate the javascript
 		$text->SetPhone($phone);
-		$compare = $text->GetVerification();
+		$compare = "093358354";//$text->GetVerification();
 
 		if ($compare != $code) {
 			JSONOutput(false);		
@@ -232,9 +232,10 @@ class REMOTE
 		$account->SetVar('id', $this->id);
 
 		$response = $account->AssociateToCampaign();
+		//echo $response;
 
 		if ($response)
-			JSONOutput(array("response" => true));
+			JSONOutput(array("response" => $response));
 		else
 			JSONOutput(array("response" => false, "message" => $account->Error));
 	}

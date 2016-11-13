@@ -4,8 +4,7 @@
  */
 
 //define some basics
-error_reporting(E_ALL ^ E_NOTICE || E_STRICT);
-// error_reporting(E_ALL);
+//error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
 session_start();
@@ -13,7 +12,7 @@ date_default_timezone_set('America/New_York');
 ini_get('date.timezone');
 
 //lets define some constants
-define('BASE_URL', 'http://www.trustreviewnetwork.com/');
+define('BASE_URL', 'http://localhost/');
 define('BASE_PATH', dirname(__FILE__));
 define('CLASS_PATH', dirname(__FILE__)."/includes/");
 define('TEMPLATE_PATH',dirname(__FILE__)."/templates/");

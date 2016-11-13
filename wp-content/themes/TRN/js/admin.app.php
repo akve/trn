@@ -4,7 +4,7 @@
  */
 
 # include the initiation file
-include("../../init.php");
+include("../init.php");
 define('APP_PATH', dirname(__FILE__)."/");
 
 # header expiries and compression
