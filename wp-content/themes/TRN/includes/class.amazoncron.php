@@ -20,11 +20,11 @@ class AMAZONCRON
 
 		foreach($users as $user)
 		{
-			$this->FindReview($user);
+			$this->FindReview($user, "");
 		}
 	}
 
-	public function FindReview($user)
+	public function FindReview($user, $customLink)
 	{
 		$amazon_user_id = $user['amazonid'];
 
@@ -54,6 +54,11 @@ class AMAZONCRON
 
 		# now that we have a user and a product we can scrape their review page
 		$link = "http://www.amazon.com/gp/cdp/member-reviews/{$amazon_user_id}/";
+
+		if ($customLink) {
+			$link = $customLink;
+		}
+
 		$asin = $product['asin'];
 
 		# get the class that we made

@@ -1,3 +1,24 @@
+var showStatus = function(growl, message, level, title, ttl) {
+			console.log(message);
+	        var params = {ttl: 4000, disableCountDown: false};
+	        if (title) params.title = title;
+	        if (ttl) params.ttl = ttl;
+	        switch (level) {
+	            case "error":
+	                growl.error(message, params);
+	                break;
+	            case "warning":
+	                growl.warning(message, params);
+	                break;
+	            case "info":
+	                growl.info(message, params);
+	                break;
+	            default:
+	                growl.success(message, params);
+	                break;
+	        }
+	    };
+
 /**
  *	Login Controller
  *	Controlls all login function for both buyers and sellers
@@ -254,51 +275,176 @@ function LoginController(postfunction, $mdToast, getParameterByName) {
  *	All functions related to the header
  *
  */
-function HeaderController(GetHeaderItems, postfunction, getParameterByName) {
+function HeaderController(GetHeaderItems, postfunction, getParameterByName, $rootScope) {
 	var trnh = this;
 
 	trnh.basepath = basepath;
 
 	GetHeaderItems(function(data) {
-		trnh.menu = data;
+		if (data.menuitems) {
+			trnh.menu = data.menuitems;
+			$rootScope.user = data.userdata;
+			console.log($rootScope.user);
+		} else {
+			trnh.menu = data;
+		}
 	});
 }
 
 /**
  *	Buyer Controller
- *	When the buyer is logged in this handles all related functions
+ *	PROFILECONTROLLER is not used ) 
  *
  */
-function BuyerController(postfunction, GetBuyerProducts, $mdDialog, $mdMedia, PercentSavings, getParameterByName, GetSellers) {
-	var trnb = this;
-	
-	// first thing we do on load is get the products
-	GetBuyerProducts("", function(data) {
-		
-		GetSellers("", function(sellerData) {
-			console.log(sellerData)
-			//trnb.BuyerProducts = data;
-			//trnb.backup = data;
-		});
-		
-		trnb.BuyerProducts = data;
-		trnb.backup = data;
+
+function BuyerProfileController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHeaderItems, $mdDialog, $mdMedia, PercentSavings, getParameterByName, GetSellers, RDRouter) {
+	var preferences = this;
+	console.log("???");
+
+	GetHeaderItems(function(data) {
+		preferences.user = data.userdata;
+		console.log(preferences.user);
 	});
+
+}
+
+
+function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHeaderItems, $mdDialog, $mdMedia, PercentSavings, getParameterByName, RDRouter, growl) {
+	var trnb = this;
+	var preferences = this;
+
+
+	var initData = function(){
+		preferences.availableOrders = 5;
+		preferences.avgReview = 0;
+		if (preferences.tmpProfile.products && preferences.tmpProfile.products.length >0) {
+			var reviewSum = 0;
+			var reviewNum = 0;
+			preferences.tmpProfile.products.forEach(function(product){
+				product.review_score = parseInt(product.review_score);
+				product.got_review = parseInt(product.got_review);
+				if (product.got_review && product.review_score ) {
+					reviewSum += product.review_score;
+					reviewNum += 1;
+					var d = new Date(parseInt("" + product.got_review + "000"));
+					product.reviewDate = d.toLocaleDateString();
+				} else {
+					preferences.availableOrders -= 1;
+				}
+				var d = new Date(parseInt("" + product.inserted + "000"));
+				product.insertedDate = d.toLocaleDateString();
+
+			});
+			if (reviewNum > 0) {
+				preferences.avgReview = parseInt(reviewSum / reviewNum * 10) / 10;
+			}
+		}
+		preferences.profile = preferences.tmpProfile;
+	}
 	
-	
-	
-	
-	
-	
+	var init = function(){
+		// first thing we do on load is get the products
+		GetHeaderItems(function(data) {
+			preferences.user = data.userdata;
+	//		console.log(preferences.user);
+			GetBuyerProducts("", function(data) {
+				GetBuyerProfile("", function(profile) {
+					//console.log(sellerData)
+					trnb.tmpProfile = profile;
+					trnb.BuyerProducts = data;
+					trnb.backup = data;
+					initData();
+					//trnb.BuyerProducts = data;
+					//trnb.backup = data;
+				});
+			});
+		});
+	}
+	init();
+
+
+	trnb.ConfirmReview = function(row){
+		//console.log("...", row);
+
+		if ($mdMedia('sm') || $mdMedia('xs'))
+			var useFullScreen = true;
+		else
+			var useFullScreen = false;
+
+		$mdDialog.show({
+			controller: ConfirmReviewController,
+			controllerAs: 'pc',
+			templateUrl: templatepath + '/templates/ConfirmReviewDialog.html',
+			parent: angular.element(document.body),
+			locals: {
+				product: row,
+				onclose: function(a) {
+					console.log("CLOSE", a)
+				}
+			},
+			clickOutsideToClose: true,
+			fullscreen: useFullScreen
+		});
+
+
+		/*ConfirmReview(row.id, function(data) {
+			//pc.ConfirmReviewLoading = false;
+			if (data) {
+				trnb.RequestResults = 'We have found your review!  You can now request another product.';
+				trnb.RequestResultsClass = 'success';
+				init();
+			} else {
+				trnb.RequestResults = 'We could not find your review.  Please contact us if you think this is a mistake.';
+				trnb.RequestResultsClass = 'error';
+			}
+		});*/
+	}
+
+	trnb.changePassword = function(){
+
+		if (!preferences.new_password || (preferences.new_password != preferences.confirm_new_password)){
+			showStatus(growl, "Passwords do not match", "error");
+			return;
+		}
+		if (preferences.new_password.length < 8){
+			showStatus(growl, "Password should be at least 8 characters", "error");
+			return;
+		}
+		var post = jQuery.param({
+			a: 'ChangePasswordBuyer',
+			password: preferences.new_password
+		});
+
+		trnb.Loading = true;
+		var callback = function(data) {
+			trnb.Loading = false;
+			if (!data.error) {
+				showStatus(growl, "Successfully changed. You'll need to re-login with your new password in 5 seconds", "success");
+				setTimeout(function(){
+					window.location.href = basepath + "buyer-login/";
+				},5000);
+			} else {
+				showStatus(growl, "Error: " +data.error, "error");
+			}
+			/*if (typeof data.error === 'undefined')
+				window.location.href = basepath + "buyer-homepage/";
+			else
+				trnb.LoginError = data.error;*/
+		}
+
+		postfunction(post, callback);
+	}
 	
 
-	trnb.SaveBuyer = function(buyer) {
-		trnb.LoginError = false;
-		trnb.LoginLoading = true;
+	trnb.SaveBuyer = function() {
+		trnb.Loading = true;
 
-		if (typeof buyer === 'undefined') {
-			trnb.LoginLoading = false;
-			return false;
+		var buyerO = preferences.user;
+		var buyer = {};
+		
+		var copy = ["id", "contact_email", "phone", "first_name", "last_name", "amazonid"];
+		for (var key in buyerO) {
+			if (copy.indexOf(key)>=0) buyer[key] = buyerO[key];
 		}
 
 		var post = jQuery.param({
@@ -307,11 +453,13 @@ function BuyerController(postfunction, GetBuyerProducts, $mdDialog, $mdMedia, Pe
 		});
 
 		var callback = function(data) {
-			trnb.LoginLoading = false;
-			if (typeof data.error === 'undefined')
-				window.location.href = basepath + "buyer-homepage/";
-			else
-				trnb.LoginError = data.error;
+			trnb.Loading = false;
+			if (typeof data.error === 'undefined') {
+				showStatus(growl, "Successfully changed. ", "success");
+			}
+			else {
+				showStatus(growl, "Error: " +data.error, "error");
+			}
 		}
 
 		postfunction(post, callback);
@@ -340,7 +488,10 @@ function BuyerController(postfunction, GetBuyerProducts, $mdDialog, $mdMedia, Pe
 			templateUrl: templatepath + '/templates/ProductDialog.html',
 			parent: angular.element(document.body),
 			locals: {
-				product: product
+				product: product,
+				onclose: function(a) {
+					console.log("CLOSE", a)
+				}
 			},
 			clickOutsideToClose: true,
 			fullscreen: useFullScreen
@@ -514,19 +665,27 @@ function ProductController($mdDialog, product, RequestProduct, PercentSavings, C
 		});
 	}
 
-	pc.ConfirmReview = function() {
-		pc.RequestResults = false;
-		pc.RequestResultsClass = false;
-		pc.ConfirmReviewLoading = true;
-		ConfirmReview(pc.product, function(data) {
-			pc.ConfirmReviewLoading = false;
-			if (data) {
-				pc.RequestResults = 'We have found your review!  You can now request another product.';
-				pc.RequestResultsClass = 'success';
-			} else {
-				pc.RequestResults = 'We could not find your review.  Please contact us if you think this is a mistake.';
-				pc.RequestResultsClass = 'error';
-			}
+	pc.ConfirmReview = function(row){
+		//console.log("...", row);
+
+		if ($mdMedia('sm') || $mdMedia('xs'))
+			var useFullScreen = true;
+		else
+			var useFullScreen = false;
+
+		$mdDialog.show({
+			controller: ConfirmReviewController,
+			controllerAs: 'pc',
+			templateUrl: templatepath + '/templates/ConfirmReviewDialog.html',
+			parent: angular.element(document.body),
+			locals: {
+				product: product,
+				onclose: function(a) {
+					console.log("CLOSE", a)
+				}
+			},
+			clickOutsideToClose: true,
+			fullscreen: useFullScreen
 		});
 	}
 
@@ -542,6 +701,67 @@ function ProductController($mdDialog, product, RequestProduct, PercentSavings, C
 	pc.PercentSavings = function(product) {
 		return PercentSavings(product);
 	}
+
+	pc.hide = function() {
+		$mdDialog.hide();
+	}
+
+	pc.cancel = function() {
+		$mdDialog.cancel();
+	}
+
+	pc.answer = function(answer) {
+		$mdDialog.hide(answer);
+	}
+}
+
+/**
+ *	Product Controller
+ *	For the product related dialogs
+ *
+ */
+function ConfirmReviewController($mdDialog, product, onclose, ConfirmReview, growl) {
+	var pc = this;
+
+	pc.product = product;
+
+	pc.link = "";
+	pc.showManual = false;
+
+
+	pc.ConfirmReview = function(isManual) {
+		if (isManual && !pc.link) {
+			showStatus(growl, "Please paste your link", "error");
+			return;
+		}
+		pc.RequestResults = false;
+		pc.RequestResultsClass = false;
+		pc.ConfirmReviewLoading = true;
+
+		ConfirmReview(pc.product, pc.link, function(data) {
+			pc.ConfirmReviewLoading = false;
+			if (data) {
+				pc.RequestResults = 'We have found your review!  You can now request another product.';
+				pc.RequestResultsClass = 'success';
+				pc.showManual = false;
+			} else {
+				pc.showManual = true;
+				if (isManual) {
+					pc.RequestResults = 'We could not find your review. Please try manual confirmation.';
+				} else {
+					pc.RequestResults = 'We could not find your review. Please contact us if you think this is a mistake.';
+				}
+				pc.RequestResultsClass = 'error';
+			}
+		});
+	}
+
+	pc.ConfirmReviewOK = function(){
+		// onbutton click
+		pc.ConfirmReview(true);
+	}
+
+	pc.ConfirmReview(false);
 
 	pc.hide = function() {
 		$mdDialog.hide();

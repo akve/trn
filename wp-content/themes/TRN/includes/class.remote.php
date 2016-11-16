@@ -179,6 +179,24 @@ class REMOTE
 			JSONOutput(array("error" => $account->Error));
 	}
 
+	public function ChangePasswordBuyer()
+	{
+		$account = GetClass('BUYERACCOUNT');
+		$buyer = $account->isBuyer();
+
+		if (!$buyer) {
+			JSONOutput(array("error" => "Not a buyer"));		
+			exit();
+		}
+
+		$output = wp_set_password( $_REQUEST['password'], $buyer['user_id'] );
+
+
+		//$save = $account->SaveAccount();
+		JSONOutput(array("status" => "ok"));
+	}
+
+
 	public function BuyerLogin()
 	{
 		$logininfo = $_REQUEST['account'];
@@ -207,6 +225,15 @@ class REMOTE
 		$account->SetVar("query", $q);
 
 		$products = $account->GetProducts();
+
+		JSONOutput($products);
+	}
+
+	public function GetBuyerProfile(){
+		$account = GetClass('BUYERACCOUNT');
+		$account->SetVar("query", $q);
+
+		$products = $account->GetProfile();
 
 		JSONOutput($products);
 	}
@@ -243,6 +270,7 @@ class REMOTE
 	public function ConfirmReview()
 	{
 		$product = $_REQUEST['product'];
+		$link = $_REQUEST['link'];
 
 		# we have to check if the user is logged in
 		$this->id = get_current_user_id();
@@ -260,7 +288,7 @@ class REMOTE
 		# set the buyerid for reference
 		$account->SetVar('id', $this->id);
 
-		$response = $account->ConfirmReview();
+		$response = $account->ConfirmReview($link);
 
 		if ($response)
 			JSONOutput(true);
@@ -579,14 +607,17 @@ class REMOTE
 		);
 
 		$buyer = GetClass("BUYERACCOUNT");
+		$buyerData = $buyer->isBuyer();
 		if ($buyer->isBuyer())
 		{
 			$menu = array(
-				array("name" => "Home", "link" => "buyer-homepage/"),
+				array("name" => "Products", "link" => "buyer-homepage/"),
 				array("name" => "FAQs", "link" => "FAQs/"),
 				array("name" => "Contact", "link" => "Contact/"),
-				array("name" => "Logout", "link" => "buyer-logout/"),
+				//array("name" => "Logout", "link" => "buyer-logout/"),
 			);			
+			$menu = array("menuitems" => $menu, "userdata" => $buyerData);
+
 		}
 
 		$seller = GetClass("SELLERACCOUNT");

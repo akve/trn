@@ -1,0 +1,40 @@
+<md-dialog aria-label="product" ng-cloak>
+	<md-dialog-content>
+		<div class="md-dialog-content">
+			<!--<pre>{{ pc.product | json }}</pre>-->			
+			<div class="col-md-12 dialog-product-info">
+				<h1>Confirm review </h1>
+				<b>for {{ pc.product.product_name }}</b>
+				
+					
+										
+				<div class="col-md-12">
+					<!--<md-button href="{{ pc.generateLink(pc.product) }}" target="_blank" class="view-amazon-btn">View On Amazon</md-button>-->
+
+					<div class="col-md-12">
+						<div class="result-message {{ pc.RequestResultsClass }}" ng-if="pc.RequestResults">
+							{{ pc.RequestResults }}
+						</div>
+					</div>
+
+					<div class="col-md-12" ng-if="pc.showManual">
+						You may input the link to your review manually. Click on 'permalink' to get it, and paste here. <br>
+						<input type="text" ng-model="pc.link" class="">
+					</div>
+
+					<div class="col-md-12"><md-button ng-click="pc.ConfirmReviewOK();" class="orange-btn">
+						<span ng-if="pc.ConfirmReviewLoading"><i class="fa fa-spin fa-spinner"></i></span>
+						<span ng-if="!pc.ConfirmReviewLoading">Confirm Review</span>
+					</md-button>
+					</div>
+				</div>
+
+					
+			</div>
+		</div>
+		
+	</md-dialog-content>
+	 <md-dialog-actions layout="row" class="layout-row">
+	  <md-button ng-click="pc.hide();">close</md-button>
+	 </md-dialog-actions>
+</md-dialog>

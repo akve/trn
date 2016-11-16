@@ -334,7 +334,7 @@ class BUYERACCOUNT
 		return $resp;
 	}
 
-	public function ConfirmReview()
+	public function ConfirmReview($link)
 	{
 		$review = GetClass('AMAZONCRON');
 
@@ -347,7 +347,24 @@ class BUYERACCOUNT
 		);
 		$user = FetchOneQuery($s, $vars);
 
-		return $review->FindReview($user);
+		return $review->FindReview($user, $link);
+	}
+
+	public function GetProfile()
+	{
+		$user = $this->isBuyer();
+
+		$s = "SELECT trn_products.*, trn_coupon_tracking.* FROM trn_coupon_tracking inner join trn_coupons on trn_coupons.id = trn_coupon_tracking.couponid  inner join trn_products on  trn_coupons.productid = trn_products.id  where buyer_id= " . $user['id'] . " order by inserted desc";
+		//echo $s;
+
+		$products = FetchQuery($s, $vars);
+		$cleaned = array();
+		foreach($products as $p => $values)
+		{
+			$cleaned[] = CleanPDO($values);
+		}
+		
+		return array("products" => $cleaned);
 	}
 
 	public function GetProducts()
@@ -534,9 +551,12 @@ class BUYERACCOUNT
 		);
 		$buyer = FetchOneQuery($s, $vars);
 
-		if (!empty($buyer))
+		if (!empty($buyer)) {
+			$buyer['usertype'] = "buyer";
 			return $buyer;
+		}
 		else
 			return false;
 	}
+
 }

@@ -1,0 +1,139 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+
+<div ng-controller="BuyerController as preferences" >
+	<div class="container" >
+		<div layout-padding>
+			<div layout="row">
+			<div layout="column">
+				<!--
+TBD LATER
+				<ul class="nav nav-tabs">
+				  <li class="active"><a href="#">Home</a></li>
+				  <li><a href="#">Menu 1</a></li>
+				  <li><a href="#">Menu 2</a></li>
+				  <li><a href="#">Menu 3</a></li>
+				</ul>-->
+
+				<form  flex="100" id="PreferencesForm" name="PreferencesForm" layout="row" layout-align="center center" ng-submit="preferences.SaveBuyer()">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Profile</span>
+							</md-card-title-text>
+						</md-card-title>
+						<md-card-content >
+						<div class="single-row">
+							<label><div style="display:block;">Email</div>
+							<input name="Username" class="general-input" ng-model="preferences.user.contact_email" required placeholder="Email" style="width:80%">
+							<span ng-if="preferences.user.email_verified != '0'">
+								<i class="fa fa-check fa-checkbox" style="color:green;" alt="Email verified" title="Email verified"></i>
+							</span>
+							<span ng-if="preferences.user.email_verified == '0'">
+								<i class="fa fa-cross" style="color:red;" alt="Email not verified" title="Email not verified"></i>
+							</span>
+							</label>
+							<label>Amazon ID
+							<input name="AmazonID" class="general-input" required type="text" ng-model="preferences.user.amazonid" placeholder="Amazon ID"></label>
+							<label>Phone
+							<input name="Phone" class="general-input" required type="text" ng-model="preferences.user.phone" placeholder="Phone"></label>
+							<label>First name
+							<input name="First name" class="general-input" required type="text" ng-model="preferences.user.first_name" placeholder="George"></label>
+							<label>Last name
+							<input name="Last name" class="general-input" required type="text" ng-model="preferences.user.last_name" placeholder="Bush"></label>
+							<div ng-if="trnl.SaveError" class="reset-message error" >
+								{{ trnl.SaveError }}
+							</div>
+						</div>
+						</md-card-content>
+						<md-card-actions layout="row" layout-align="end center">
+							<md-button class="orange-btn" type="submit">
+								<span ng-if="preferences.Loading"><i class="fa fa-spin fa-spinner"></i></span>
+								<span ng-if="!preferences.Loading">Save info</span>
+							</md-button>				
+						</md-card-actions>
+					</md-card>
+				</form>
+			</div>
+			<div layout="column">
+				<form autocomplete="off"  layout="row" layout-align="center center" ng-submit="preferences.changePassword()">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Change password</span>
+							</md-card-title-text>
+						</md-card-title>
+						<md-card-content>
+							<input name="New password" class="general-input" required type="password" ng-model="preferences.new_password" placeholder="New Password">
+							<input name="Confirm new password" class="general-input" required type="password" ng-model="preferences.confirm_new_password" placeholder="Confirm New Password">
+							<div ng-if="trnl.SaveError" class="reset-message error" >
+								{{ trnl.SaveError }}
+							</div>
+						</md-card-content>
+						<md-card-actions layout="row" layout-align="end center">
+							<md-button class="orange-btn" type="submit">
+								<span ng-if="preferences.Loading"><i class="fa fa-spin fa-spinner"></i></span>
+								<span ng-if="!preferences.Loading">Change password</span>
+							</md-button>				
+						</md-card-actions>
+					</md-card>
+				</form>
+			</div>
+			</div>
+			<div layout="row">
+				<form flex="100" id="PreferencesForm" name="PreferencesForm" layout="row" layout-align="center center" ng-submit="preferences.goToOrders()">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Your orders / reviews</span>
+							</md-card-title-text>
+						</md-card-title>
+						<md-card-content>
+							You have {{preferences.availableOrders}} out of 5 orders available. <br>
+							{{preferences.avgReview > 0 ? "Your average review score is " + preferences.avgReview : ""}}
+							<table class="table">
+								<tr >
+									<th>Product</th>
+									<th>Discount</th>
+									<th>Ordered</th>
+									<th>Status</th>
+								</tr>
+								<tr ng-repeat="row in preferences.profile.products">
+									<td>
+										<img src="{{row.img_sm}}" style="width:100px;">
+										<a href='https://www.amazon.com/dp/{{row.asin}}'>{{row.product_name}}</a>
+									<td>
+										$<span style="text-decoration:line-through;">{{row.price}}</span>
+										&nbsp;<span>{{row.discount_price}}</span>
+									</td>
+									<td>{{row.insertedDate}}</td>
+									<td>
+										<div ng-if="row.got_review">
+											<i class="fa fa-star" style="color:green;"></i> {{row.review_score}} stars, on {{row.reviewDate}}
+										</div>
+										<div ng-if="!row.got_review">
+											Missing review.<br>
+											<button ng-click="preferences.ConfirmReview(row)" class='orange-btn-small md-button md-ink-ripple'>confirm review</button><br>
+											<button ng-click="row.revealCoupon = !row.revealCoupon" class="gray-btn-small">reveal coupon code</button>
+											<div ng-if="row.revealCoupon">
+												Coupon code:<br>
+												{{row.coupon}}
+											</div>
+										</div>
+
+									</td>
+								</tr>
+							</table>
+						</md-card-content>
+						<!--<md-card-actions layout="row" layout-align="end center">
+							<md-button class="orange-btn" type="submit">
+								<span>See details</span>
+							</md-button>				
+						</md-card-actions>-->
+					</md-card>
+				</form>
+
+			</div>
+		</div>
+	</div>
+</div>

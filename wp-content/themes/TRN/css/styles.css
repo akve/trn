@@ -28,6 +28,29 @@ li.header-menu-item a:hover { text-decoration: none; color: #fff; }
 .header-menu li.login a { border: 1px solid #ccc; padding: 10px 25px; color: #ccc; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; }
 .header-menu li.login a:hover { background: #ccc; color: #232f3e; }
 
+
+.header-menu-dropdown {
+
+}
+.menu-dropdown-content {
+
+	position: absolute;
+    right: 0;
+    background-color: rgba(35, 47, 62, 1);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	display: none;
+}
+
+
+.header-menu-dropdown:hover .menu-dropdown-content {
+	list-style: none;
+    display: block;
+}
+.header-menu-dropdown:hover .menu-dropdown-content a {
+	padding-left:10px;
+}
+
 /** dialog **/
 .result-message { display: inline-block; background-color: #ccc; padding: 20px; width: 100%; text-align: center; border-radius: 4px; }
 .result-message.success { background-color: #C8E6C9; }
@@ -123,6 +146,10 @@ md-card-title-text { overflow: hidden; height: 70px; }
 /** general **/
 .orange-btn { background: #febd69 none repeat scroll 0 0; color: #232f3e; font-size: 21px; font-weight: 600; height: 60px; letter-spacing: 3px; line-height: 60px; margin: 10px 0 25px; outline: medium none; padding: 0; text-transform: uppercase; width: 100%; max-height: 60px !important; letter-spacing: 1px; }
 .orange-btn:hover { background-color: #eee !important; }
+.orange-btn-small { background: #febd69 none repeat scroll 0 0; color: #232f3e; font-size: 15px; font-weight: 600; height: 40px; letter-spacing: 3px; line-height: 40px; margin: 7px 0 15px; outline: medium none; padding: 0; text-transform: uppercase; width: 100%; max-height: 40px !important; letter-spacing: 1px; }
+.orange-btn-small:hover { background-color: #eee !important; }
+.gray-btn-small { background: #BBB none repeat scroll 0 0; color: #232f3e; font-size: 15px; font-weight: 600; height: 40px; letter-spacing: 3px; line-height: 40px; margin: 7px 0 15px; outline: medium none; padding: 0; text-transform: uppercase; width: 100%; max-height: 40px !important; letter-spacing: 1px; }
+.gray-btn-small:hover { background-color: #eee !important; }
 #LoginForm, #SellerSignup, #BuyerSignup { margin: 60px 0; }
 #SellerSignup { margin: 0; }
 #SellerSignup md-card { padding: 40px; }
@@ -157,18 +184,17 @@ form .edit-product .orange-btn { width: auto; padding: 0 30px; font-size: 15px; 
 form .add-product { background: #fff; }
 form .add-product .orange-btn { width: auto; padding: 0 30px; font-size: 15px; max-height: 40px !important; line-height: 40px; letter-spacing: 0; margin-left: 10px; }
 ul.buyer-products { width: 100%; margin: 0; }
-ul.buyer-products li { list-style: none; height: 500px }
+ul.buyer-products li { list-style: none; height: 500px; margin-bottom: 20px; }
 ul.buyer-products li md-card { max-width: 100%; width: 100%; box-shadow: none; margin: 0; }
 ul.buyer-products li md-card img { max-width: 500px; max-height: 300px; height: auto; width: auto; }
-ul.buyer-products .img { width: 100%; text-align: center; background: #fff; }
-ul.buyer-products .img img { height: 260px; }
+ul.buyer-products .img { width: 100%; text-align: center; background: #fff; padding:10px; }
+ul.buyer-products .img img { height: 240px; }
 ul.buyer-products .md-headline { text-align: center; font-weight: 600; font-size: 14px; line-height: 19px; }
 ul.buyer-products .price { text-align: center; }
 ul.buyer-products .price .regular { font-size: 15px; color: #999; }
 ul.buyer-products .price .regular span { font-size: 16px; }
 ul.buyer-products .price .current { font-size: 26px; color: #333; font-weight: bold; letter-spacing: -1px; display: inline-block; float: left; margin: 0 5px 0 0; width: 100%; }
 ul.buyer-products .price .discount { font-size: 19px; color: #008a00; font-weight: 600; }
-ul.buyer-products .price .discount span { font-size: 16px; }
 ul.buyer-products .orange-btn { font-size: 15px; max-height: 45px !important; line-height: 45px; letter-spacing: 0; }
 ul.buyer-products md-card md-card-title { padding: 16px; height: 75px; overflow: hidden; }
 .product-info { }
@@ -179,8 +205,8 @@ ul.buyer-products md-card md-card-title { padding: 16px; height: 75px; overflow:
 .dialog-product-info .price .regular { font-size: 19px; margin-bottom: 10px; color: #999; }
 .dialog-product-info .price .current { font-size: 31px; color: #333; font-weight: bold; letter-spacing: -1px; display: inline-block; float: left; margin: 8px 5px 0 0; }
 .dialog-product-info .price .discount { font-size: 19px; color: #fff; font-weight: 600; background: #008a00; display: inline-block; padding: 8px 15px 10px; margin: 0 10px; }
-.dialog-product-info .orange-btn { font-size: 15px; max-height: 45px !important; line-height: 45px; letter-spacing: 0; width: auto; padding: 0 30px; float: left; margin: 5px 5px 5px 0; }
-.dialog-product-info .view-amazon-btn { font-size: 15px; max-height: 45px !important; line-height: 45px; letter-spacing: 0; width: auto; padding: 0 30px; float: left; margin: 5px 5px 5px 0; background: #eee; font-weight: 600; }
+.dialog-product-info .orange-btn { font-size: 15px; max-height: 45px !important; line-height: 45px; letter-spacing: 0; width: auto; padding: 0 30px; float: left; margin: 0 10px 0 0; }
+.dialog-product-info .view-amazon-btn { font-size: 15px; max-height: 45px !important; line-height: 45px; letter-spacing: 0; width: auto; padding: 0 30px; float: left; margin: 0 10px 0 0; background: #eee; font-weight: 600; }
 md-dialog md-dialog-actions { border-top: 1px solid #eee !important; }
 md-dialog .md-dialog-content { display: inline-block; }
 md-dialog .result-message { margin-top: 20px; font-weight: 600; }
@@ -215,3 +241,8 @@ md-input-container > md-radio-group > md-radio-button { margin: 8px 5px 0; displ
 .password-reset-form { max-width: 400px; margin: 20px; }
 .reset-message { background-color: #F1F8E9; border-radius: 3px; padding: 15px; margin: 10px 0; color: #33691E; }
 .reset-message.error { background-color: #F44336; color: #FFF; }
+
+.single-row label {
+	display: block;
+	min-width: 400px;
+}

@@ -1,0 +1,49 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+
+<div ng-controller="BuyerHistoryController as history" >
+	<div class="container" >
+		<div layout-padding>
+			<div layout="row">
+				<form flex="100" id="PreferencesForm" name="PreferencesForm" layout="row" layout-align="center center" ng-submit="preferences.goToOrders()">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Orders awaiting your review</span>
+							</md-card-title-text>
+						</md-card-title>
+						<md-card-content>
+							You have {{preferences.availableOrders}} out of 5.
+						</md-card-content>
+						<md-card-actions layout="row" layout-align="end center">
+							<md-button class="orange-btn" type="submit">
+								<span>See details</span>
+							</md-button>				
+						</md-card-actions>
+					</md-card>
+				</form>
+
+			</div>
+			<div layout="row">
+				<form flex="100" id="PreferencesForm" name="PreferencesForm" layout="row" layout-align="center center" ng-submit="preferences.goToOrders()">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Action history</span>
+							</md-card-title-text>
+						</md-card-title>
+						<md-card-content>
+							You have {{preferences.availableOrders}} out of 5.
+						</md-card-content>
+						<md-card-actions layout="row" layout-align="end center">
+							<md-button class="orange-btn" type="submit">
+								<span>See details</span>
+							</md-button>				
+						</md-card-actions>
+					</md-card>
+				</form>
+
+			</div>
+		</div>
+	</div>
+</div>

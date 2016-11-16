@@ -1,17 +1,27 @@
 rootApp.factory('postfunction', function($http, $timeout) {
 	return function(data, callback, url, method) {
-		if (url === undefined) {
+		if (!url) {
 			url = templatepath+"/remote.php";
 		}
 		if (method === undefined) {
 			method = "POST";
 		}
-		req = $http({
+		if (method == "GET") {
+
+			req = $http({
+			url: url + "?" + data,
+			method: method
+			});
+
+		} else {
+			req = $http({
 			url: url,
 			method: method,
 			data: data,
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		});
+			headers: method == "POST" ? {'Content-Type': 'application/x-www-form-urlencoded'} : {}
+			});
+
+		}
 
 		req.success(function(data) {
 			if (typeof callback !== 'undefined')
@@ -36,6 +46,20 @@ rootApp.factory('GetBuyerProducts', function($filter, postfunction) {
 		postfunction(post,callback);
 	}
 });
+
+rootApp.factory('GetBuyerProfile', function($filter, postfunction) {
+	return function(query, returndata) {
+		var post = jQuery.param({a: 'GetBuyerProfile', q: query });
+
+		var callback = function(data)
+		{
+			returndata(data);
+		}
+
+		postfunction(post,callback, null, 'GET');
+	}
+});
+
 
 rootApp.factory('GetSellers', function($filter, postfunction) {
 	return function(query, returndata) {
@@ -73,20 +97,20 @@ rootApp.factory('RequestProduct', function(postfunction) {
 			returndata(data);
 		}
 
-		postfunction(post,callback);
+		postfunction(post,callback,null, 'GET');
 	}
 });
 
 rootApp.factory('ConfirmReview', function(postfunction) {
-	return function(product, returndata) {
-		var post = jQuery.param({a: 'ConfirmReview', product: product });
+	return function(product, link, returndata) {
+		var post = jQuery.param({a: 'ConfirmReview', product: product, link: link });
 
 		var callback = function(data)
 		{
 			returndata(data);
 		}
 
-		postfunction(post,callback);
+		postfunction(post,callback, null, 'GET');
 	}
 });
 
@@ -134,6 +158,21 @@ rootApp.factory('GetHeaderItems', function(postfunction) {
 			returndata(data);
 		}
 
+		postfunction(post,callback, null, 'GET');
+
+		//postfunction(post,callback);
+	}
+});
+
+rootApp.factory('GetBuyerFullInfo', function(postfunction) {
+	return function(returndata) {
+		var post = jQuery.param({a: 'GetBuyerFullInfo'});
+
+		var callback = function(data)
+		{
+			returndata(data);
+		}
+
 		postfunction(post,callback);
 	}
 });
@@ -154,3 +193,55 @@ function MyFactorySeller(LocalDatabase) {
 		hello: 'hello world'
 	}
 }
+
+rootApp.factory('RDRouter', [FactoryRouter])
+
+function FactoryRouter() {
+	var Route = this;
+	return {
+		parseQuery: function(string) {
+			var parameters = string.split('&');
+			var query = {};
+			angular.forEach(parameters, function(p, k) {
+				var par = p.split("=");
+				query[par[0]] = par[1];
+			});
+
+			return query;
+		},
+		getRoute: function(callback) {
+			var hash = window.location.hash;
+			// we have to remove the query from the hash
+			hash = hash.split("?")[0];
+
+			Route.location = hash.replace(/[^A-Za-z]/g, '');
+
+			// set a default here
+			if (typeof Route.location === 'undefined' || Route.location == "")
+				Route.location = "AddProject";
+
+			if (typeof callback !== 'undefined')
+				callback(Route);
+		},
+		changeRoute: function(route) {
+			history.pushState(route, document.title, window.location.pathname + window.location.search + '#/' + route);
+		},
+		cleanURL: function(url) {
+			url = url.replace('https://', '');
+			url = url.replace(window.location.hash, '');
+			url = url.replace('http://', '');
+
+			url = url.split('/');
+
+			//clear out filters
+			for (var key = url.length - 1; key >= 0; key--) {
+				var urlf = url[key];
+				if (urlf !== undefined && urlf !== "" && (urlf.indexOf('f:') > -1 || urlf.indexOf('r:') > -1)) {
+					url.splice(key, 1);
+				}
+			}
+
+			return url;
+		}
+	};
+};

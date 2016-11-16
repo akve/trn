@@ -6,6 +6,13 @@
 			<li class="header-menu-item animated fadeIn {{ item.buttonclass }}" ng-repeat="item in trnh.menu">
 				<a ng-href="{{ trnh.basepath }}{{ item.link }}">{{ item.name }}</a>
 			</li>
+			<li class="header-menu-item animated fadeIn header-menu-dropdown" ng-if="user.usertype=='buyer'">
+				<a>Profile</a>
+				<ul class="menu-dropdown-content">
+					<li> <a ng-href="{{ trnh.basepath }}buyer-profile/">My profile</a> </li>
+					<li> <a ng-href="{{ trnh.basepath }}buyer-logout/">Log out</a> </li>
+				</ul>
+			</li>
 		</ul>
 		
 		<div class="mobile-menu" ng-model="collapsed" ng-click="collapsed=!collapsed">
