@@ -103,7 +103,7 @@ rootApp.factory('RequestProduct', function(postfunction) {
 
 rootApp.factory('ConfirmReview', function(postfunction) {
 	return function(product, link, returndata) {
-		var post = jQuery.param({a: 'ConfirmReview', product: product, link: link });
+		var post = jQuery.param({a: 'ConfirmReview', product: product.id?product.id : product, link: link });
 
 		var callback = function(data)
 		{

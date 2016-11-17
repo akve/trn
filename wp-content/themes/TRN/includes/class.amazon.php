@@ -73,7 +73,11 @@ Class AMAZON
 			return false;
 
 		# first thing we do is get the page html
+		//echo $link;
 		$html = $this->CurlRequest($link);
+		//echo $asin;
+
+		//echo $html;
 
 		# scrape for asin
 		preg_match("/".$asin."/", $html, $c_asin);
@@ -81,15 +85,41 @@ Class AMAZON
 		# scrape for userid
 		preg_match("/".$userid."/", $html, $c_userid);
 
+		//var_dump($c_asin);
+		//var_dump($c_userid);
+		//echo "USERID ". $c_userid;
+
 		# to determin if the link is valid all we have to do is make sure that the compare arrays aren't empty
 		if (!empty($c_userid) && !empty($c_asin)) {
 			# we have to get the permalink
-			preg_match("/http:\/\/www.amazon.com\/review\/(.{5,20})\/ref\=(.{1,40})\?ie=UTF8\&ASIN\=".$asin."\#wasThisHelpful\" \>/", $html, $permalink);
-			$pl = "http://www.amazon.com/review/".$permalink[1]."/";
+			//echo $html;
+			/*
+			LOOKING FOR: 
+			<div id="glimpse-ephemeral-metadata-Glimpse-REVIEW-R10IOMYTHI8EPU"
+			    data-activity-timestamp="1341082342" 
+			    data-asin="B008CGMPNO"
+			    data-customer-id="A3OAVPLLMJTXQ0"
+			    data-product-id="B008CGMPNO"
+			    data-story-type="REVIEW"
+			    data-question-id="" >
+			*/
+			preg_match("/amazon\.com\/review\/(.{5,20}))\//", $link, $url_link);
+			if ($url_link && count($url_link) > 0) {
+				// this is custom link
+				preg_match("/\"(.{1,5}) out of 5 stars\"/", $html, $stars);
+			} else {
+				preg_match("/Glimpse-REVIEW-(.{5,20})\"([^>]+)".$asin."\"/", $html, $permalink);
+				
+				//preg_match("/http:\/\/www.amazon.com\/review\/(.{5,20})\/ref\=(.{1,40})\?ie=UTF8\&ASIN\=".$asin."\#wasThisHelpful\" \>/", $html, $permalink);
+				//var_dump($permalink);
+				$pl = "https://www.amazon.com/review/".$permalink[1]."/";
+				//echo $pl;
 
-			# now we scrape this specific review page to get the star rating
-			$reviewhtml = $this->CurlRequest($pl);
-			preg_match("/\"(.{1,5}) out of 5 stars\"/", $reviewhtml, $stars);
+				# now we scrape this specific review page to get the star rating
+				$reviewhtml = $this->CurlRequest($pl);
+				preg_match("/\"(.{1,5}) out of 5 stars\"/", $reviewhtml, $stars);
+				//var_dump($stars);
+			}
 
 			$values = array(
 				"stars" => $stars[1],

@@ -644,7 +644,7 @@ function SellerController(postfunction, $mdDialog, $mdMedia, PercentSavings, get
  *	For the product related dialogs
  *
  */
-function ProductController($mdDialog, product, RequestProduct, PercentSavings, ConfirmReview) {
+function ProductController($mdDialog, product, $mdMedia, RequestProduct, PercentSavings, ConfirmReview) {
 	var pc = this;
 
 	pc.product = product;
@@ -720,7 +720,7 @@ function ProductController($mdDialog, product, RequestProduct, PercentSavings, C
  *	For the product related dialogs
  *
  */
-function ConfirmReviewController($mdDialog, product, onclose, ConfirmReview, growl) {
+function ConfirmReviewController($mdDialog, $mdMedia, product, onclose, ConfirmReview, growl) {
 	var pc = this;
 
 	pc.product = product;

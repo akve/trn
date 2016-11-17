@@ -334,7 +334,7 @@ class BUYERACCOUNT
 		return $resp;
 	}
 
-	public function ConfirmReview($link)
+	public function ConfirmReview($link, $product)
 	{
 		$review = GetClass('AMAZONCRON');
 
@@ -347,7 +347,7 @@ class BUYERACCOUNT
 		);
 		$user = FetchOneQuery($s, $vars);
 
-		return $review->FindReview($user, $link);
+		return $review->FindReview($user, $link, $product);
 	}
 
 	public function GetProfile()

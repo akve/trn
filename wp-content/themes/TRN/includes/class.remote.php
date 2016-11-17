@@ -288,7 +288,7 @@ class REMOTE
 		# set the buyerid for reference
 		$account->SetVar('id', $this->id);
 
-		$response = $account->ConfirmReview($link);
+		$response = $account->ConfirmReview($link, $product);
 
 		if ($response)
 			JSONOutput(true);
