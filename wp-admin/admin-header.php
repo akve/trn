@@ -171,6 +171,8 @@ if ( is_network_admin() )
 $admin_body_class .= ' no-customize-support no-svg';
 
 ?>
+
+<link rel="stylesheet" href="/wp-includes/bower/ng-table/dist/ng-table.css">
 </head>
 <?php
 /**
@@ -189,6 +191,7 @@ $admin_body_class .= ' no-customize-support no-svg';
  */
 $admin_body_classes = apply_filters( 'admin_body_class', '' );
 ?>
+
 <body class="wp-admin wp-core-ui no-js <?php echo $admin_body_classes . ' ' . $admin_body_class; ?>">
 <script type="text/javascript">
 	document.body.className = document.body.className.replace('no-js','js');

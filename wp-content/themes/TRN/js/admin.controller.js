@@ -2,6 +2,22 @@ function AdminBuyerController(FactoryBuyers, RDRouter, $mdDialog) {
 	var abc = this;
 	abc.buyers = [];
 
+	var data = [{name: "Moroni", age: 50} /*,*/];
+	abc.tableParams = new NgTableParams({}, { dataset: data});
+
+	/*$scope.gridOptions = {
+            paginationPageSizes: [25, 50, 100],
+            paginationPageSize: $scope.filesPageSize,
+            enableGridMenu: false,
+            enableSorting: true,
+            enableColumnResizing: true,
+            enableColumnMenus: false,
+            enableHorizontalScrollbar: true,
+            enableVerticalScrollbar: true,
+            rowTemplate: rowTemplate(),
+            columnDefs: [],
+            data: [],*/
+
 	abc.getBuyers = function() {
 		abc.loading = true;
 		FactoryBuyers.getBuyers(function(buyers) {
@@ -94,13 +110,18 @@ function AdminSellerController(FactorySeller, RDRouter, $timeout, $mdDialog) {
 	}
 }
 
-function AdminSettingsController(LocalDatabase, $timeout) {
+function AdminSettingsController(LocalDatabase, $timeout, NgTableParams) {
 	var aset = this;
 	aset.settings = {};
 
+	var data = [{name: "Moroni", age: 50} /*,*/];
+	
+
 	aset.getSettings = function() {
+		aset.tableParams = new NgTableParams({}, { dataset: data});
 		LocalDatabase.getSettings(function(settings) {
 			aset.settings = settings;
+			//aset.settings.associatecode="???";
 		});
 	}
 

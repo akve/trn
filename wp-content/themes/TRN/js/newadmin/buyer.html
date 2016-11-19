@@ -1,0 +1,48 @@
+<md-dialog aria-label="product" ng-cloak>
+	<md-dialog-content>
+		<div class="md-dialog-content">
+			<!--<pre>{{ pc.product | json }}</pre>-->
+
+			<div class="col-md-12">
+			 	<table class="table">
+								<tr >
+									<th>Product</th>
+									<th>Discount</th>
+									<th>Ordered</th>
+									<th>Status</th>
+								</tr>
+								<tr ng-repeat="row in products">
+									<td>
+										<img src="{{row.img_sm}}" style="width:100px;">
+										<a href='https://www.amazon.com/dp/{{row.asin}}'>{{row.product_name}}</a>
+									<td>
+										$<span style="text-decoration:line-through;">{{row.price}}</span>
+										&nbsp;<span>{{row.discount_price}}</span>
+									</td>
+									<td>{{row.insertedDate}}</td>
+									<td>
+										<div ng-if="row.got_review">
+											<i class="fa fa-star" style="color:green;"></i> {{row.review_score}} stars, on {{row.reviewDate}}
+										</div>
+										<div ng-if="!row.got_review">
+											Missing review.<br>
+											<!--<button ng-click="preferences.ConfirmReview(row)" class='orange-btn-small md-button md-ink-ripple'>confirm review</button><br>-->
+											<button ng-click="row.revealCoupon = !row.revealCoupon" class="gray-btn-small">reveal coupon code</button>
+											<div ng-if="row.revealCoupon">
+												Coupon code:<br>
+												{{row.coupon}}
+											</div>
+										</div>
+
+									</td>
+								</tr>
+							</table>
+					
+			</div>
+		</div>
+		
+	</md-dialog-content>
+	 <md-dialog-actions layout="row" class="layout-row">
+	  <md-button ng-click="hide();">close</md-button>
+	 </md-dialog-actions>
+</md-dialog>

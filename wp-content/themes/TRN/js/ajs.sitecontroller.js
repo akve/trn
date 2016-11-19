@@ -314,7 +314,8 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 	var preferences = this;
 
 
-	var initData = function(){
+	var initData = function(buyerproducts){
+		if (!buyerproducts) buyerproducts = trnb.BuyerProducts;
 		preferences.availableOrders = 5;
 		preferences.avgReview = 0;
 		if (preferences.tmpProfile.products && preferences.tmpProfile.products.length >0) {
@@ -334,6 +335,16 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 				var d = new Date(parseInt("" + product.inserted + "000"));
 				product.insertedDate = d.toLocaleDateString();
 
+				buyerproducts.forEach(function(bp) {
+					if (bp.id == product.id) {
+						if (product.got_review) {
+							bp.state = "reviewed"
+						} else {
+							bp.state = "ordered";
+						}
+					}
+				})
+
 			});
 			if (reviewNum > 0) {
 				preferences.avgReview = parseInt(reviewSum / reviewNum * 10) / 10;
@@ -351,9 +362,9 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 				GetBuyerProfile("", function(profile) {
 					//console.log(sellerData)
 					trnb.tmpProfile = profile;
-					trnb.BuyerProducts = data;
 					trnb.backup = data;
-					initData();
+					initData(data);
+					trnb.BuyerProducts = data;
 					//trnb.BuyerProducts = data;
 					//trnb.backup = data;
 				});
