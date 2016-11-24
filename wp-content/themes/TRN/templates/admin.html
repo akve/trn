@@ -37,13 +37,13 @@ button.md-small.blue {background-color: #90CAF9;}
 
 <div class="admin-body" ng-app="trnadmin" ng-controller="AdminController">
 	<div growl></div>
-<ul class="nav nav-tabs">
-				  <li class="{{currentMode == 'buyers'? 'active':''}}"><a ng-click="changeMode('buyers')">Buyers</a></li>
-				  <li class="{{currentMode == 'sellers'? 'active':''}}"><a ng-click="changeMode('sellers')">Sellers</a></li>
-				</ul>
-	<h1>Manage TRN Settings</h1>
+	<h1>Manage TRN </h1>
+	<ul class="nav nav-tabs">
+	  <li class="{{currentMode == 'buyers'? 'active':''}}"><a ng-click="changeMode('buyers')">Buyers</a></li>
+	  <li class="{{currentMode == 'sellers'? 'active':''}}"><a ng-click="changeMode('sellers')">Sellers</a></li>
+	  <li class="{{currentMode == 'products'? 'active':''}}"><a ng-click="changeMode('products')">Products / Campaigns</a></li>
+	</ul>
 	<!--#include file="contact.html" -->
-	<p>Managea Specific TRN settings here.</p>
 
 	<div style='border:1px solid #808080; border-radius:10px; padding:10px; margin:10px;'>
 		<h3>Filter</h3>
@@ -68,31 +68,98 @@ button.md-small.blue {background-color: #90CAF9;}
 		</select> | <a ng-click="exportToCsv()">Export to CSV</a>
 	</div>
 
-	<table ng-table="tableParams" class="table table-condensed table-bordered table-striped" show-filter="false">
-	    <tr ng-repeat="user in $data">
-	        <td title="'Email'" filter="{ contact_email: 'text'}" sortable="'contact_email'">
-	           <a ng-click='getBuyerDetails(user)'>{{user.contact_email}}</a> </td>
-	        <td title="'AmazonID'" filter="{ amazonid: 'text'}" sortable="'amazonid'">
-	            {{user.amazonid}}</td>
-            <td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
-	            {{user.name}}</td>
-            <td title="'Phone'" filter="{ phone: 'text'}" sortable="'phone'">
-	            {{user.phone}}</td>
-	        <td title="'Created'" filter="{ created: 'number'}" sortable="'created'">
-	            {{getDate(user.created)}}</td>
-	        <td title="'Total orders'" filter="{ total_orders: 'number'}" sortable="'total_orders'">
-	            {{user.total_orders}}</td>
-	        <td title="'Current orders'" filter="{ orders: 'number'}" sortable="'orders'">
-	            {{user.orders}}</td>
-	        <td title="'Reviews'" filter="{ reviews: 'number'}" sortable="'reviews'">
-	            {{user.reviews}}</td>
-	        <td title="'Avg stars'" filter="{ avg_score: 'number'}" sortable="'avg_score'">
-	            {{user.avg_score}}</td>
-	        <td title="'Status'">
-	        	<a ng-click='changeBuyerState(user.id, {blocked:(user.blocked=="1"?0:1)})'>{{user.blocked == "0"?"Active":"Inactive"}}</a> 
-	        </td>
-	    </tr>
+	<div ng-show="currentMode=='buyers'" >
+	<table ng-table="buyersParams" class="table table-condensed table-bordered table-striped" show-filter="false">
+		    <tr ng-repeat="user in $data" >
+		        <td title="'Email'" filter="{ contact_email: 'text'}" sortable="'contact_email'">
+		           <a ng-click='getBuyerDetails(user)'>{{user.contact_email}}</a> </td>
+		        <td title="'AmazonID'" filter="{ amazonid: 'text'}" sortable="'amazonid'">
+		            {{user.amazonid}}</td>
+	            <td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
+		            {{user.name}}</td>
+	            <td title="'Phone'" filter="{ phone: 'text'}" sortable="'phone'">
+		            {{user.phone}}</td>
+		        <td title="'Created'" filter="{ created: 'number'}" sortable="'created'">
+		            {{getDate(user.created)}}</td>
+		        <td title="'Total orders'" filter="{ total_orders: 'number'}" sortable="'total_orders'">
+		            {{user.total_orders}}</td>
+		        <td title="'Current orders'" filter="{ orders: 'number'}" sortable="'orders'">
+		            {{user.orders}}</td>
+		        <td title="'Reviews'" filter="{ reviews: 'number'}" sortable="'reviews'">
+		            {{user.reviews}}</td>
+		        <td title="'Avg stars'" filter="{ avg_score: 'number'}" sortable="'avg_score'">
+		            {{user.avg_score}}</td>
+		        <td title="'Status'">
+		        	<a ng-click='changeBuyerState(user.id, {blocked:(user.blocked=="1"?0:1)})'>{{user.blocked == "0"?"Active":"Inactive"}}</a> 
+		        </td>
+		    </tr>
 	</table>
+	</div>
+
+	<div ng-show="currentMode=='sellers'" >
+	<table ng-table="sellersParams"  class="table table-condensed table-bordered table-striped" show-filter="false">
+		    <tr ng-repeat="user in $data" >
+	        <td title="'Email'" sortable="'contact_email'">
+	           <a ng-click="changeMode('products', false, [{field:'seller_id', condition:'=', value: user.id}])">{{user.contact_email}}</a> </td>
+	       <td title="'Name'" sortable="'name'">
+	           {{user.name}}</td>
+	       </td>
+	       <td title="'Company'" sortable="'Company'">
+	           {{user.Company}}</td>
+	       <td title="'Phone'" sortable="'Phone'">
+	           {{user.Phone}}</td>
+	       <td title="'ASIN'" sortable="'amazonid'">
+	           {{user.amazonid}}</td>
+	       <td title="'Created'" sortable="'created'">
+	           {{getDate(user.created)}}</td>
+	       <td title="'Blocked'" sortable="'blocked'">
+	       	<a ng-click='changeSellerState(user.id, {blocked:(user.blocked=="1"?0:1)})'>{{user.blocked == "0"?"OK":"Blocked"}}</a>
+	           </td>
+	       <td title="'Approved'" sortable="'Approval'">
+	           <a ng-click='changeSellerState(user.id, {Approval:(user.Approval=="1"?0:1)})'>{{user.Approval == "0"?"Not Approved":"Approved"}}</a></td>
+	       <td title="'Paused'" sortable="'Pause'">
+	           <a ng-click='changeSellerState(user.id, {Pause:(user.Pause=="1"?0:1)})'>{{user.Pause == "0"?"OK":"Paused"}}</a></td>
+	       </tr>
+	</table>
+	</div>
+	<div ng-show="currentMode=='products'" >
+	<table ng-table="productsParams"  class="table table-condensed table-bordered table-striped" show-filter="false">
+		    <tr ng-repeat="user in $data" >
+	        <td title="'Email'" sortable="'contact_email'">
+	           {{user.contact_email}}</td>
+	       <td title="'Company'" sortable="'Company'">
+	           {{user.Company}}</td>
+	       <td title="'ASIN'" sortable="'asin'">
+	           {{user.asin}}</td>
+	       <td title="'Product name'" sortable="'product_name'">
+	           {{user.product_name}}</td>
+	       <td title="'Price'" sortable="'price'">
+	           {{user.price}}</td>
+	       <td title="'Discount price'" sortable="'discount_price'">
+	           {{user.discount_price}}</td>
+	       <td title="'Start date'" sortable="'startdate'">
+	           {{getDate(user.startdate)}}</td>
+	       <td title="'End date'" sortable="'enddate'">
+	           {{getDate(user.enddate)}}</td>
+	       <td title="'Total orders'" sortable="'total_orders'">
+	           {{user.total_orders}}</td>
+	       <td title="'Reviews'" sortable="'reviews'">
+	           {{user.reviews}}</td>
+	       <td title="'Total coupons'" sortable="'total_coupons'">
+	           {{user.total_coupons}}</td>
+	       <td title="'Used coupons'" sortable="'used_coupons'">
+	           {{user.used_coupons}}</td>
+	       <td title="'Avg score'" sortable="'avg_score'">
+	           {{user.avg_score}}</td>
+	       <td title="'Force stop'" sortable="'active'">
+	           <a ng-click='changeProductState(user.id, {Pause:(user.active=="1"?0:1)})'>{{user.active == "1" ? "Active":"Inactive"}}</a>
+	           </td>
+   	       <td title="'Paused'" sortable="'Pause'">
+           		<a ng-click='changeProductState(user.id, {Pause:(user.Pause=="1"?0:1)})'>{{user.Pause == "0"?"OK":"Paused"}}</a></td>
+	       </tr>
+
+	</table>
+	</div>
 	<div><b> Total {{total}} rows</b></div>
 
 	

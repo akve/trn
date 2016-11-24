@@ -27,15 +27,29 @@ class REMOTE {
 					(select avg(review_score) from trn_coupon_tracking where buyer_id = wb.id and got_review > 0) avg_score
 					from wp_atn_buyer wb 
 					) innertbl ";
-		} else {
-			$sql = "SELECT * FROM wp_atn_buyers";
+		} 
+		if ($data["target"] == "sellers") {
+			$sql = "select FIELDS from (select concat(wb.firstName,' ', wb.lastName) name, wb.* ,
+					(select count(id) from trn_products where seller_id = wb.id ) total_products,
+					(select count(id) from trn_products where seller_id = wb.id and active=1 ) active_products,
+					(select count(id) from trn_products where seller_id = wb.id and pause=1 ) paused_products
+					from wp_atn_sellers wb 
+					) innertbl ";
+		}
+		if ($data["target"] == "products") {
+			$sql = "select FIELDS from (SELECT p.*, s.contact_email, s.Company,
+					(select count(trackind_id) from trn_coupons c inner join trn_coupon_tracking t on t.couponid = c.id where c.productid = p.id) total_orders,
+					(select count(trackind_id) from trn_coupons c inner join trn_coupon_tracking t on t.couponid = c.id where c.productid = p.id and got_review > 0) reviews,
+					(select count(id) from trn_coupons c where c.productid = p.id) total_coupons,
+					(select count(id) from trn_coupons c where c.productid = p.id and c.status = 1) used_coupons,
+					(select avg(review_score) from trn_coupons c inner join trn_coupon_tracking t on t.couponid = c.id where c.productid = p.id and got_review > 0) avg_score
+
+					 FROM trn_products p
+					inner join trn.wp_atn_sellers s on p.seller_id = s.id 
+					) innertbl";
 		}
 		// calc totals
-		$sqlTotal = str_replace("FIELDS", "count(*) cnt", $sql);
-		$existing = FetchOneQuery($sqlTotal, $vars);
-		$totals = $existing["cnt"];
 
-		$sql = str_replace("FIELDS", "*", $sql);
 
 		if ($data["where"]) {
 			$sql .= " WHERE " . $data["where"]  . " ";
@@ -43,6 +57,11 @@ class REMOTE {
 		if ($data["order"]) {
 			$sql .= " ORDER BY " . $data["order"] . " ";
 		}
+
+		$sqlTotal = str_replace("FIELDS", "count(*) cnt", $sql);
+		$existing = FetchOneQuery($sqlTotal, $vars);
+		$totals = $existing["cnt"];
+		$sql = str_replace("FIELDS", "*", $sql);
 
 		if ($data["mode"] == "csv") {
 			//header('Content-Type: text/csv; charset=utf-8');
@@ -90,6 +109,9 @@ class REMOTE {
 
 		if ($data["mode"] == "buyers") {
 			$table = "wp_atn_buyer";
+		}
+		if ($data["mode"] == "sellers") {
+			$table = "wp_atn_sellers";
 		}
 		$changes = "";
 		foreach($data["changes"] as $key => $value) {

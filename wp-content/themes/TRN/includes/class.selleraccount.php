@@ -376,7 +376,7 @@ class SELLERACCOUNT
 
 	public function ChangeActivity()
 	{
-		$u = "UPDATE trn_products SET active = NOT active WHERE id = :id";
+		$u = "UPDATE trn_products SET Pause = NOT Pause WHERE id = :id";
 		$vars = array("id" => $this->product['id']);
 		UpdateQuery($u, $vars);
 
@@ -385,6 +385,7 @@ class SELLERACCOUNT
 
 		return $product;
 	}
+
 
 	public function GetProduct()
 	{

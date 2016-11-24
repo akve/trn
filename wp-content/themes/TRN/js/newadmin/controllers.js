@@ -39,9 +39,7 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 
 	$scope.currentMode = "buyers";
 
-	$scope.changeMode = function(mode){
-		$scope.currentMode = mode;
-	}
+
 
 	$scope.filter = {
 		fields: [],
@@ -64,15 +62,7 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 			{name:"like", value:"like"}
 		],
 		addAs: "",
-		possibleFields: [
-			{name:"contact_email", title: "Email", type:"text"},
-			{name:"total_orders", title: "Total orders", type:"num"},
-			{name:"orders", title: "Current orders", type:"num"},
-			{name:"reviews", title: "Reviews", type:"num"},
-			{name:"avg_score", title: "Avg review stars", type:"num"},
-			{name:"blocked", title: "Blocked", type:"bool"},
-			{name:"created", title: "Created", type:"date"}
-		],
+		possibleFields: [],
 		buildQuery: function(){
 			var res = "1=1";
 			$scope.filter.fields.forEach(function(fld){
@@ -90,7 +80,63 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 	};
 
 	$scope.rerun = function(){
-		$scope.tableParams.reload();
+		if ($scope.currentMode == "buyers") $scope.buyersParams.reload();
+		if ($scope.currentMode == "sellers") $scope.sellersParams.reload();
+		if ($scope.currentMode == "products") $scope.productsParams.reload();
+	}
+
+	$scope.changeMode = function(mode, skipRefresh, filterFields){
+		$scope.currentMode = mode;
+		if (mode == "buyers") {
+			$scope.filter.possibleFields = [
+				{name:"contact_email", title: "Email", type:"text"},
+				{name:"name", title: "Name", type:"text"},
+				{name:"total_orders", title: "Total orders", type:"num"},
+				{name:"orders", title: "Current orders", type:"num"},
+				{name:"reviews", title: "Reviews", type:"num"},
+				{name:"avg_score", title: "Avg review stars", type:"num"},
+				{name:"blocked", title: "Blocked", type:"bool"},
+				{name:"created", title: "Created", type:"date"}
+			];
+		}
+		if (mode == "sellers") {
+			$scope.filter.possibleFields = [
+				{name:"contact_email", title: "Email", type:"text"},
+				{name:"name", title: "Name", type:"text"},
+				{name:"company", title: "Company", type:"text"},
+				{name:"phone", title: "Phone", type:"text"},
+				{name:"contact_email", title: "Email", type:"text"},
+				{name:"created", title: "Created", type:"date"},
+				{name:"contact_email", title: "Email", type:"text"},
+				{name:"blocked", title: "Blocked", type:"bool"},
+				{name:"approval", title: "Approved", type:"bool"},
+				{name:"pause", title: "Paused", type:"bool"}
+			];
+		}
+		if (mode == "products") {
+			$scope.filter.possibleFields = [
+				{name:"contact_email", title: "Seller email", type:"text"},
+				{name:"product_name", title: "Name", type:"text"},
+				{name:"company", title: "Seller Company", type:"text"},
+				{name:"seller_id", title: "Seller ID", type:"num"},
+				{name:"asin", title: "ASIN", type:"text"},
+				{name:"active", title: "Active/blocked", type:"bool"},
+				{name:"Pause", title: "Paused", type:"bool"}
+			];
+		}
+		if (!filterFields) {
+			$scope.filter.fields = [];
+		} else {
+			filterFields.forEach(function(f){
+				$scope.filter.possibleFields.forEach(function(fp) {
+					if (fp.name == f.field) {
+						f.field = fp;
+					}
+				})
+			})
+			$scope.filter.fields = filterFields;
+		}
+		if (!skipRefresh) $scope.rerun();
 	}
 
 	$scope.getDate = function(v){
@@ -105,6 +151,13 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 				$scope.rerun();
 			});
 	}
+	$scope.changeSellerState = function(id, data) {
+		$rootScope.loadData({action:"update", data:{id:id, mode:$scope.currentMode, changes:data}},function(data){
+				$rootScope.showStatus("Changed", "success");
+				$scope.rerun();
+			});
+	}
+
 
 	$scope.getBuyerDetails = function(buyer) {
 		$rootScope.loadData({action:"get_buyer", data:{id:buyer.id}},function(data){
@@ -154,7 +207,8 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 
 	//$scope.filterSettings = ;
 
-	$scope.gatherQuery = function(params){
+	$scope.gatherQuery = function(params, mode){
+		if (!mode) mode = $scope.currentMode;
 		var order = params? params.orderBy(): ["id"];
 		if (order.length >0) {
 			order = order[0];
@@ -164,7 +218,7 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 			order = "";
 		}
 		var q = {
-			target:$scope.currentMode,
+			target:mode,
 			limit:params?params.count():99999,
 			start:params? (params.count() * (params.page() - 1)) : 0,
 			order: order,
@@ -173,23 +227,33 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 		return q;
 	}
 
-	$scope.tableParams = new NgTableParams({}, {
-		getData: function(params) {
-			var deferred = $q.defer();
-			//params.total(1);
-			var q = $scope.gatherQuery(params);
-			console.log("PARAMS", params, params.page(),params.count() );
+	$scope.onGetData = function(params, mode) {
+		var deferred = $q.defer();
+		//params.total(1);
+		var q = $scope.gatherQuery(params, mode);
+		console.log("PARAMS", mode, $scope.currentMode );
 
+		if (mode == $scope.currentMode) {
 			$rootScope.loadData({action:"query",data:q},function(data){
 				//var data = [{name: "Moroni", age: 50} /*,*/];
 				params.total(parseInt(data.totals));
+				console.log("?", data.totals);
 				$scope.total = data.totals;
 				deferred.resolve(data.rows);
 				//console.log(data);
 			});
-			return deferred.promise;
-        }
-	});
+		} else {
+			deferred.resolve([]);
+		}
+		return deferred.promise;
+    };
+
+	$scope.buyersParams = new NgTableParams({}, {getData:function(params) {return $scope.onGetData(params, "buyers")}});
+	$scope.sellersParams = new NgTableParams({}, {getData:function(params) {return $scope.onGetData(params, "sellers")}});
+	$scope.productsParams = new NgTableParams({}, {getData:function(params) {return $scope.onGetData(params, "products")}});
+
+	$scope.changeMode("buyers", true);
+
 //	$rootScope.showStatus("OK", "success", "", 600000);
 
 	

@@ -38,7 +38,7 @@
 						<div class="edit-product" flex="50" flex-gt-sm="20">
 							<md-button class="orange-btn" href="/edit-product/?productid={{ product.id }}">Edit Product</md-button>
 						</div>
-						<span class='product-active' ng-class="product.active == 1 ? 'active' : 'inactive'" flex="50" flex-gt-sm="30" ng-click="trns.ChangeActivity(product);" >{{ product.active == 1 ? 'Active' : 'Inactive' }}</span>
+						<span class='product-active' ng-class="product.Pause == 1 ? 'inactive' : 'active'" flex="50" flex-gt-sm="30" ng-click="trns.ChangeActivity(product);" >{{ product.Pause == 1 ? 'Paused' : 'Active' }}</span>
 					</div>
 					
 				</div>

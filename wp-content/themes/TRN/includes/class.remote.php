@@ -502,9 +502,9 @@ class REMOTE
 			"Price" => $product['attributes']['ListPrice']['Amount']/100,
 			"CustomURLDefault" => "http://www.amazon.com/dp/$asin/",
 			"images" => array(
-				"low" => $product['images']['ImageSet'][0]['ThumbnailImage']['URL'],
-				"med" => $product['images']['ImageSet'][0]['MediumImage']['URL'],
-				"high" => $product['images']['ImageSet'][0]['LargeImage']['URL'],
+				"low" => $product['thumb_image'], //$product['images']['ImageSet'][0]['ThumbnailImage']['URL'],
+				"med" => $product['med_image'], //$product['images']['ImageSet'][0]['MediumImage']['URL'],
+				"high" => $product['big_image']// $product['images']['ImageSet'][0]['LargeImage']['URL'],
 			),
 		);
 

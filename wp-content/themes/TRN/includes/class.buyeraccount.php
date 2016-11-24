@@ -373,7 +373,7 @@ class BUYERACCOUNT
 		$c = "SELECT * FROM trn_settings WHERE label = 'associatecode' ";
 		$code = FetchOneQuery($c);
 
-		$s = "SELECT * FROM trn_products WHERE active = 1";
+		$s = "SELECT * FROM trn_products WHERE active = 1 and Pause = 0";
 		if (BAPO()) {
 			$s = "SELECT * FROM trn_products";
 		}

@@ -534,13 +534,17 @@ function SellerController(postfunction, $mdDialog, $mdMedia, PercentSavings, get
 
 		var callback = function(data) {
 			trns.ASINLoading = false;
-			if (data.product)
-				trns.product = data.product;
+			// TBD: Not so fast...
+			if (data.product) {
+				var copy = ["Title","images","Description","Price"];
+				copy.forEach(function(key){trns.product[key] = data.product[key]});
+				//trns.product = data.product;				
+			}
 			else
 				trns.ASINError = true;
 		}
 
-		postfunction(post, callback);
+		postfunction(post, callback, null, 'GET');
 	}
 
 	trns.ProcessProduct = function(product) {
@@ -635,13 +639,14 @@ function SellerController(postfunction, $mdDialog, $mdMedia, PercentSavings, get
 		});
 
 		var callback = function(data) {
-			product.active = data.active;
+			product.Pause = data.Pause;
 		}
 
 		postfunction(post, callback);
 	}
 
 	trns.countCoupons = function() {
+		if (!trns.product) return 0;
 		if (typeof trns.product.SUCC === 'undefined' || trns.product.SUCC == "")
 			return 0;
 

@@ -5,7 +5,7 @@
 
 //define some basics
 //error_reporting(E_ALL);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 
 session_start();
 date_default_timezone_set('America/New_York');
@@ -175,6 +175,7 @@ function DBInsert($table, $insert)
 
 function CleanPDO($r)
 {
+	if (!$r) return $r;
 	foreach($r as $k => $v) {
 		if (is_numeric($k)) {
 			unset($r[$k]);
