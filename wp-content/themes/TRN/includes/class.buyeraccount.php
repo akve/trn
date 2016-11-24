@@ -380,12 +380,18 @@ class BUYERACCOUNT
 		$products = FetchQuery($s);
 
 		$cleaned = array();
+		$directHit = false;
 		foreach($products as $p => $values)
 		{
 			# unset products that aren't within the dates
 			if (!BetweenDates($values['startdate'], $values['enddate']) && !BAPO()) {
 				continue;
 			}
+			if ($this->query != "") {
+				if (strpos(strtolower($values['product_name']), strtolower($this->query)) !== false ) {
+					$directHit = $values;
+				}
+			} 
 
 			$values['associatecode'] = $code['value'];
 			$cleaned[] = CleanPDO($values);
@@ -403,7 +409,7 @@ class BUYERACCOUNT
 			usort($cleaned, 'lev_sorter');
 		}
 
-		return $cleaned;
+		return array("direct" => $directHit, "list" => $cleaned);
 	}
 
 	public function CalculateLevenshtein($r)

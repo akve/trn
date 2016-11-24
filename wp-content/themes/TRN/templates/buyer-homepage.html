@@ -11,6 +11,8 @@
 	<div class="Welcome" ng-init="trnb.getNotification();" ng-show="trnb.NotificationMessage">
 		<p class="container message">{{ trnb.NotificationMessage }}</p>
 	</div>
+	<div class="h3" style='text-align:center;' ng-show="trnb.Search && !trnb.direct"> Sorry, we found no direct matches for your search. <br>Here's the list of closest matches.
+	</div>
 
 	<!-- Signup content -->
 	<div class="container" >

@@ -313,6 +313,8 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 	var trnb = this;
 	var preferences = this;
 
+	trnb.direct = true;
+
 
 	var initData = function(buyerproducts){
 		if (!buyerproducts) buyerproducts = trnb.BuyerProducts;
@@ -362,9 +364,9 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 				GetBuyerProfile("", function(profile) {
 					//console.log(sellerData)
 					trnb.tmpProfile = profile;
-					trnb.backup = data;
+					trnb.backup = data.list;
 					initData(data);
-					trnb.BuyerProducts = data;
+					trnb.BuyerProducts = data.list;
 					//trnb.BuyerProducts = data;
 					//trnb.backup = data;
 				});
@@ -515,7 +517,8 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 
 	trnb.FilterResults = function() {
 		GetBuyerProducts(trnb.Search, function(data) {
-			trnb.BuyerProducts = data;
+			trnb.direct = data.direct;
+			trnb.BuyerProducts = data.list;
 		});
 	}
 }
