@@ -48,6 +48,15 @@ class REMOTE {
 					inner join trn.wp_atn_sellers s on p.seller_id = s.id 
 					) innertbl";
 		}
+		if ($data["target"] == "reviews") {
+			$sql = "select FIELDS from (SELECT ct.*,b.contact_email, s.id seller_id, s.Company, p.product_name FROM trn_coupon_tracking ct
+					inner join wp_atn_buyer b on b.id = ct.buyer_id 
+					inner join trn_coupons c on c.id = ct.couponid
+					inner join trn_products p on c.productid = p.id
+					inner join wp_atn_sellers s on c.seller_id = s.id
+					) innertbl
+					";
+		}
 		// calc totals
 
 

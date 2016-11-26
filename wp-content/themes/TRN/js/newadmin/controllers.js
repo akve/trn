@@ -83,6 +83,7 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 		if ($scope.currentMode == "buyers") $scope.buyersParams.reload();
 		if ($scope.currentMode == "sellers") $scope.sellersParams.reload();
 		if ($scope.currentMode == "products") $scope.productsParams.reload();
+		if ($scope.currentMode == "reviews") $scope.reviewsParams.reload();
 	}
 
 	$scope.changeMode = function(mode, skipRefresh, filterFields){
@@ -124,6 +125,19 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 				{name:"Pause", title: "Paused", type:"bool"}
 			];
 		}
+		if (mode == "reviews") {
+			$scope.filter.possibleFields = [
+				{name:"contact_email", title: "Buyer email", type:"text"},
+				{name:"buyer_id", title: "Buyer id", type:"text"},	
+				{name:"product_name", title: "Name", type:"text"},
+				{name:"seller_id", title: "Seller ID", type:"num"},
+				{name:"Company", title: "Seller Company", type:"text"},
+				{name:"asin", title: "ASIN", type:"text"},
+				{name:"inserted", title: "Order date", type:"date"},
+				{name:"got_review", title: "Review date", type:"date"},
+				{name:"review_score", title: "Review score", type:"num"}
+			];
+		}
 		if (!filterFields) {
 			$scope.filter.fields = [];
 		} else {
@@ -140,6 +154,7 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 	}
 
 	$scope.getDate = function(v){
+		if (!v || v == "0") return "";
 		var d = new Date(parseInt("" + v + "000"));
 		return d.toDateString();
 		//new Date(parseInt("" + user.created + "000")).toLocalDateString()
@@ -251,6 +266,7 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 	$scope.buyersParams = new NgTableParams({}, {getData:function(params) {return $scope.onGetData(params, "buyers")}});
 	$scope.sellersParams = new NgTableParams({}, {getData:function(params) {return $scope.onGetData(params, "sellers")}});
 	$scope.productsParams = new NgTableParams({}, {getData:function(params) {return $scope.onGetData(params, "products")}});
+	$scope.reviewsParams = new NgTableParams({}, {getData:function(params) {return $scope.onGetData(params, "reviews")}});
 
 	$scope.changeMode("buyers", true);
 

@@ -42,6 +42,7 @@ button.md-small.blue {background-color: #90CAF9;}
 	  <li class="{{currentMode == 'buyers'? 'active':''}}"><a ng-click="changeMode('buyers')">Buyers</a></li>
 	  <li class="{{currentMode == 'sellers'? 'active':''}}"><a ng-click="changeMode('sellers')">Sellers</a></li>
 	  <li class="{{currentMode == 'products'? 'active':''}}"><a ng-click="changeMode('products')">Products / Campaigns</a></li>
+	  <li class="{{currentMode == 'reviews'? 'active':''}}"><a ng-click="changeMode('reviews')">Orders / Reviews</a></li>
 	</ul>
 	<!--#include file="contact.html" -->
 
@@ -72,7 +73,8 @@ button.md-small.blue {background-color: #90CAF9;}
 	<table ng-table="buyersParams" class="table table-condensed table-bordered table-striped" show-filter="false">
 		    <tr ng-repeat="user in $data" >
 		        <td title="'Email'" filter="{ contact_email: 'text'}" sortable="'contact_email'">
-		           <a ng-click='getBuyerDetails(user)'>{{user.contact_email}}</a> </td>
+		           <a ng-click="changeMode('reviews', false, [{field:'buyer_id', condition:'=', value: user.id}])">{{user.contact_email}}</a>
+		            </td>
 		        <td title="'AmazonID'" filter="{ amazonid: 'text'}" sortable="'amazonid'">
 		            {{user.amazonid}}</td>
 	            <td title="'Name'" filter="{ name: 'text'}" sortable="'name'">
@@ -158,6 +160,32 @@ button.md-small.blue {background-color: #90CAF9;}
            		<a ng-click='changeProductState(user.id, {Pause:(user.Pause=="1"?0:1)})'>{{user.Pause == "0"?"OK":"Paused"}}</a></td>
 	       </tr>
 
+	</table>
+	</div>
+
+	<div ng-show="currentMode=='reviews'" >
+	<table ng-table="reviewsParams" class="table table-condensed table-bordered table-striped" show-filter="false">
+		    <tr ng-repeat="user in $data" >
+		        <td title="'Buyer email'" filter="{ contact_email: 'text'}" sortable="'contact_email'">
+		           {{user.contact_email}} </td>
+		        <td title="'Product ASIN'" filter="{ asin: 'text'}" sortable="'asin'">
+		            {{user.asin}}</td>
+		        <td title="'Product name'" filter="{ asin: 'text'}" sortable="'product_name'">
+		            {{user.product_name}}</td>
+	            <td title="'Coupon'" filter="{ name: 'text'}" sortable="'coupon'">
+		            {{user.coupon}}</td>
+	            <td title="'Ordered'" filter="{ phone: 'text'}" sortable="'inserted'">
+		            {{getDate(user.inserted)}}</td>
+		        <td title="'Reviewed'" filter="{ created: 'number'}" sortable="'got_review'">
+		            {{getDate(user.got_review)}}</td>
+		        <td title="'Stars'" filter="{ total_orders: 'number'}" sortable="'review_score'">
+		            {{user.review_score}}</td>
+		        <td title="'Seller ID'" filter="{ orders: 'number'}" sortable="'seller_id'">
+		            {{user.seller_id}}</td>
+		        <td title="'Seller Company'" filter="{ reviews: 'number'}" sortable="'Company'">
+		            {{user.Company}}</td>
+		        </td>
+		    </tr>
 	</table>
 	</div>
 	<div><b> Total {{total}} rows</b></div>

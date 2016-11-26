@@ -15,12 +15,18 @@ class AMAZONCRON
 
 	public function CheckReviews()
 	{
-		$s = "SELECT * FROM wp_atn_buyer WHERE amazonid != '' AND current_coupon != '' AND current_coupon != 'locked'";
+		$dt = time() - 86400 + 1000; // check until yesterday, plus 1000 seconds as check time
+		$s = "SELECT b.*, p.id productid FROM trn_coupon_tracking ct
+					inner join wp_atn_buyer b on b.id = ct.buyer_id 
+					inner join trn_coupons c on c.id = ct.couponid
+					inner join trn_products p on c.productid = p.id
+					inner join wp_atn_sellers s on c.seller_id = s.id
+					where ct.got_review = 0 and ifnull(last_check,0) < " . $dt;
 		$users = FetchQuery($s);
 
 		foreach($users as $user)
 		{
-			$this->FindReview($user, "", ""); // TBD!!!
+			$this->FindReview($user, "", $user["productid"]); // TBD!!!
 		}
 	}
 
@@ -106,8 +112,76 @@ class AMAZONCRON
 			DBInsert("wp_atn_reviews", $track_reviews);*/
 
 			return true;
+		} else {
+			$u = "UPDATE trn_coupon_tracking SET last_check = :reviewdate WHERE trackind_id = :id";
+			$vars = array("id" => $product['trackind_id'], "reviewdate" => time());
+			UpdateQuery($u, $vars);
 		}
 		
 		return false;
+	}
+
+	public function SendReviewNotifications(){
+		$dt2 = time() - (86400 * 30); // max 30 days late order
+		$dt = time() - (86400 * 7); // 7 days to check
+
+		$s = "SELECT b.*, p.id productid, p.product_name, p.asin, ct.last_order_check, ct.inserted, ct.trackind_id FROM trn_coupon_tracking ct
+					inner join wp_atn_buyer b on b.id = ct.buyer_id 
+					inner join trn_coupons c on c.id = ct.couponid
+					inner join trn_products p on c.productid = p.id
+					inner join wp_atn_sellers s on c.seller_id = s.id
+					where ct.got_review = 0 and ifnull(last_order_check,0) < " . $dt . " and ifnull(ct.inserted,0) > " . $dt2 . " and ifnull(ct.inserted,0) < " . $dt;
+
+		//$s .= " and buyer_id = 3278"; // security measure! don't send emails ) 			
+		echo $s;
+		$users = FetchQuery($s);
+		var_dump($users);
+
+		foreach($users as $user)
+		{
+			// update tracking to send once
+			$u = "UPDATE trn_coupon_tracking SET last_order_check = :reviewdate WHERE trackind_id = :id";
+			$vars = array("id" => $user['trackind_id'], "reviewdate" => time());
+			UpdateQuery($u, $vars);
+
+			$timepassed = intval((time() - $user['inserted']) / 86400); 
+			echo $timepassed;
+			$template = 0;
+			if ($timepassed >= 7 && $timepassed < 10) {
+				$template = 1;
+			}
+			if ($timepassed >= 14 && $timepassed < 17) {
+				$template = 2;
+			}
+			if ($timepassed >= 20 && $timepassed < 22) {
+				$template = 3;
+			}
+			var_dump(array("buyer" => $user['id'], "product" => $user["product_name"], "template" => $template, "timepassed" => $timepassed));
+
+			# once we have the new buyer inserted let's send an email
+			$email = GetClass('EMAIL');
+			$d = $user['inserted'];
+			$d = new DateTime("@$d");
+			$file = file_get_contents(TEMPLATE_PATH."Panels/TRN-logo.html");
+	 		$file = preg_replace("/%%TEMPLATE_Directory%%/", get_template_directory_uri(), $file);
+			$vars = array(
+				"Logo" => $file,
+				"timepassed" => $timepassed,
+				"bought_on" => date_format($d,"m/d/Y"),
+				"Year" => date('Y'),
+				"link" => BASE_URL."buyer-profile"
+			);
+
+			foreach ($user as $k => $v)
+			{
+				$vars[$k] = $v;
+			}
+			var_dump($vars);
+
+			$body = $email->SetEmailTemplate('ReviewReminder1' , $vars); // . $template
+			$subject = "TRN: Review reminder";
+			$email->Send($vars['contact_email'], $body, $subject, "trn@trustreviewnetwork.com");
+
+		}
 	}
 }
