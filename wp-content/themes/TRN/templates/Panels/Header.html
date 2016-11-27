@@ -13,6 +13,13 @@
 					<li> <a ng-href="{{ trnh.basepath }}buyer-logout/">Log out</a> </li>
 				</ul>
 			</li>
+			<li class="header-menu-item animated fadeIn header-menu-dropdown" ng-if="user.usertype=='seller'">
+				<a>Profile</a>
+				<ul class="menu-dropdown-content">
+					<li> <a ng-href="{{ trnh.basepath }}seller-profile/">My profile</a> </li>
+					<li> <a ng-href="{{ trnh.basepath }}seller-logout/">Log out</a> </li>
+				</ul>
+			</li>
 		</ul>
 		
 		<div class="mobile-menu" ng-model="collapsed" ng-click="collapsed=!collapsed">

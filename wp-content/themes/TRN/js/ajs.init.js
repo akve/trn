@@ -1,4 +1,4 @@
-var rootApp = angular.module('root', ['ngSanitize','ngMaterial','ngMessages','angular-growl'])
+var rootApp = angular.module('root', ['ngSanitize','ngMaterial','ngMessages','angular-growl','ngTable'])
 .config(function($mdThemingProvider) {
 	$mdThemingProvider.theme('default')
 		.primaryPalette('green')

@@ -79,7 +79,7 @@
 							<div class="hint">for Reviewers to contact you if coupon problems arise</div>
 						</md-input-container>
 					</div>-->
-					<div flex="100" layout="row" layout-wrap>
+					<div flex="50" layout="row" layout-wrap>
 						<md-input-container class="md-block no-margin" flex>
 							<label>List of Single-Use Coupon Codes</label>
 							<textarea name="SUCC" rows="5" ng-model="trns.product.SUCC" required ng-disabled="!trns.product.populated" style="height: 200px"></textarea>
@@ -87,6 +87,12 @@
 							<div ng-messages="EditProduct.SUCC.$error">
 								<div ng-message="required">You need to add coupons to this product</div>
 							</div>
+						</md-input-container>
+					</div>
+					<div flex="50" layout="row" layout-wrap>
+						<md-input-container class="md-block no-margin" flex>
+							<label>List of used Codes</label>
+							<textarea name="SUCC2" rows="5"  style="height: 200px" ng-model="trns.used"></textarea>
 						</md-input-container>
 					</div>
 					<div class="extra-padding" style="margin-bottom: 20px;">

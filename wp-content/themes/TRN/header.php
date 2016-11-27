@@ -39,6 +39,9 @@
 	<script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular-touch.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.js"></script>
+
+	
+	<script src="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.js"></script>
 	
 	<script src="<?php echo get_template_directory_uri(); ?>/js/vendor/angular-growl.min.js"></script>
 	<!-- local javascript -->

@@ -35,10 +35,14 @@
 						</div>
 					</div>
 					<div class="actions" layout="row" layout-align="end center" layout-padding>
+						<div class="edit-product" flex="20" flex-gt-sm="20">
+							<md-button href="/seller-profile/?asin={{ product.asin }}">Review stats</md-button>
+						</div>
 						<div class="edit-product" flex="50" flex-gt-sm="20">
 							<md-button class="orange-btn" href="/edit-product/?productid={{ product.id }}">Edit Product</md-button>
 						</div>
 						<span class='product-active' ng-class="product.Pause == 1 ? 'inactive' : 'active'" flex="50" flex-gt-sm="30" ng-click="trns.ChangeActivity(product);" >{{ product.Pause == 1 ? 'Paused' : 'Active' }}</span>
+						<span class='product-active' flex="20" flex-gt-sm="20" ng-click="trns.ArchiveProduct(product);" ><i class='fa fa-remove'></i> &nbsp;Archive</span>
 					</div>
 					
 				</div>

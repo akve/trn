@@ -196,6 +196,45 @@ class REMOTE
 		JSONOutput(array("status" => "ok"));
 	}
 
+	public function SaveSeller()
+	{
+		$account = GetClass('SELLERACCOUNT');
+		$account->SetVar("seller", $_POST['seller']);
+
+		$seller = $account->isSeller();
+
+		if (!$seller) {
+			JSONOutput(false);		
+			exit();
+		}
+
+		$account->SetVar("id", $seller['id']);
+
+		$save = $account->SaveAccount();
+
+		if ($save)
+			JSONOutput($save);
+		else
+			JSONOutput(array("error" => $account->Error));
+	}
+
+	public function ChangePasswordSeller()
+	{
+		$account = GetClass('SELLERACCOUNT');
+		$buyer = $account->isSeller();
+
+		if (!$buyer) {
+			JSONOutput(array("error" => "Not a seller"));		
+			exit();
+		}
+
+		$output = wp_set_password( $_REQUEST['password'], $buyer['user_id'] );
+
+
+		//$save = $account->SaveAccount();
+		JSONOutput(array("status" => "ok"));
+	}
+
 
 	public function BuyerLogin()
 	{
@@ -231,6 +270,15 @@ class REMOTE
 
 	public function GetBuyerProfile(){
 		$account = GetClass('BUYERACCOUNT');
+		$account->SetVar("query", $q);
+
+		$products = $account->GetProfile();
+
+		JSONOutput($products);
+	}
+
+	public function GetSellerProfile(){
+		$account = GetClass('SELLERACCOUNT');
 		$account->SetVar("query", $q);
 
 		$products = $account->GetProfile();
@@ -441,6 +489,15 @@ class REMOTE
 		JSONOutput($product);
 	}
 
+	public function ArchiveProduct()
+	{
+		$account = GetClass('SELLERACCOUNT');
+		$account->SetVar('product', $_REQUEST['product']);
+
+		$product = $account->ArchiveProduct();
+		
+		JSONOutput($product);
+	}
 
 	public function SellerLogin()
 	{
@@ -621,13 +678,16 @@ class REMOTE
 		}
 
 		$seller = GetClass("SELLERACCOUNT");
-		if ($seller->isSeller())
+		$sellerData = $seller->isSeller();
+		if ($sellerData)
 		{
+			$sellerData['usertype'] = 'seller';
 			$menu = array(
 				array("name" => "View Products", "link" => "seller-products/"),
 				array("name" => "Add Product", "link" => "add-product/"),
-				array("name" => "Logout", "link" => "seller-logout/"),
+//				array("name" => "Logout", "link" => "seller-logout/"),
 			);			
+			$menu = array("menuitems" => $menu, "userdata" => $sellerData);
 		}
 
 		JSONOutput($menu);
@@ -757,5 +817,11 @@ class REMOTE
 		$res = $admin->deleteSeller();
 
 		JSONOutput($res);		
+	}
+
+	public function sellerQuery(){
+		$seller = GetClass("SELLERACCOUNT");
+	
+		$seller->query($_REQUEST);
 	}
 }

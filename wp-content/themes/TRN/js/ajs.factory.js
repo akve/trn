@@ -60,6 +60,19 @@ rootApp.factory('GetBuyerProfile', function($filter, postfunction) {
 	}
 });
 
+rootApp.factory('GetSellerProfile', function($filter, postfunction) {
+	return function(query, returndata) {
+		var post = jQuery.param({a: 'GetSellerProfile', q: query });
+
+		var callback = function(data)
+		{
+			returndata(data);
+		}
+
+		postfunction(post,callback, null, 'GET');
+	}
+});
+
 
 rootApp.factory('GetSellers', function($filter, postfunction) {
 	return function(query, returndata) {

@@ -1,0 +1,142 @@
+<!-- load display header template via angular -->
+<div template-panel ver="Header"></div>
+
+<link rel="stylesheet" type="text/css" href="/wp-content/themes/TRN/js/vendor/bootstrap.css">
+<link rel="stylesheet" href="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.css">
+
+<div ng-controller="SellerController as preferences" >
+	<div class="container" >
+		<div layout-padding>
+			<div layout="row">
+				<div layout="column">
+				<div style='border:1px solid #808080; border-radius:10px; padding:10px; margin:10px;'>
+					<h3>Filter</h3>
+					<table class="table table-condensed">
+						<tr ng-repeat="row in filter.fields">
+							<td>{{row.field.title}}</td>
+							<td><select ng-model="row.condition" ng-options="option.value as option.name for option in filter.possibleOptions">
+								</select>
+							<td>
+								<input type="text" ng-model="row.value" ng-if="row.field.type != 'bool'">
+								<select ng-model="row.value" ng-if="row.field.type == 'bool'">
+									<option value='1' selected='row.value=="1"'>Yes</option>
+									<option value='0' selected='row.value=="0"'>No</option>
+								</select>
+								<span ng-if="row.field.type=='date'">MM/DD or MM/DD/YY</span>
+							</td>
+							<td><a ng-click="filter.remove($index)">remove</td>
+						</tr>
+					</table>
+					<a ng-click="rerun()" class="button">Run search</a> | 
+					Add filter:
+					<select ng-model="filter.addAs" ng-options="option.name as option.title for option in filter.possibleFields" ng-change='filter.add()'>
+					</select> | <a ng-click="exportToCsv()">Export to CSV</a>
+				</div>
+				<div style="clear:both"></div>
+				<div style="padding-left:10px;margin-left:10px;border-left:1px solid #aaaaaa;margin-bottom:10px;">
+					Total orders: {{avgs.total_orders}}<br>
+					Total reviews: {{avgs.total_reviews}}<br>
+					Average stars: {{avgs.avg_score}}
+				</div>
+
+				<table ng-table="sellersParams" class="table table-condensed table-bordered table-striped" show-filter="false">
+					    <tr ng-repeat="user in $data" >
+					        <td title="'Buyer email'" filter="{ contact_email: 'text'}" sortable="'contact_email'">
+					           {{user.contact_email}}</a>
+					            </td>
+					        <td title="'Product ID'" filter="{ amazonid: 'text'}" sortable="'asin'">
+					            {{user.asin}}</td>
+				            <td title="'Product name'" filter="{ name: 'text'}" sortable="'name'">
+					            {{user.product_name}}</td>
+					        <td title="'Ordered'" sortable="'inserted'">
+					            {{getDate(user.inserted)}}</td>
+					        <td title="'Reviewed on'" sortable="'got_review'">
+					            {{getDate(user.got_review)}}</td>
+					        <td title="'Review score'" sortable="'review_score'">
+					            {{user.review_score}}</td>
+					    </tr>
+				</table>
+			</div>
+			</div></div>
+			<div layout="row">
+			<div layout="column">
+				<!--
+TBD LATER
+				<ul class="nav nav-tabs">
+				  <li class="active"><a href="#">Home</a></li>
+				  <li><a href="#">Menu 1</a></li>
+				  <li><a href="#">Menu 2</a></li>
+				  <li><a href="#">Menu 3</a></li>
+				</ul>-->
+
+				<form  flex="100" id="PreferencesForm" name="PreferencesForm" layout="row" layout-align="center center" ng-submit="preferences.SaveSeller()">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Profile</span>
+							</md-card-title-text>
+						</md-card-title>
+						<md-card-content >
+						<div class="single-row">
+							<label><div style="display:block;">Email</div>
+							<input name="Username" class="general-input" ng-model="preferences.user.contact_email" required placeholder="Email" style="width:80%">
+							<span ng-if="preferences.user.email_verified != '0'">
+								<i class="fa fa-check fa-checkbox" style="color:green;" alt="Email verified" title="Email verified"></i>
+							</span>
+							<span ng-if="preferences.user.email_verified == '0'">
+								<i class="fa fa-cross" style="color:red;" alt="Email not verified" title="Email not verified"></i>
+							</span>
+							</label>
+							<label>Amazon ID
+							<input name="AmazonID" class="general-input" required type="text" ng-model="preferences.user.amazonid" placeholder="Amazon ID"></label>
+							<label>Phone
+							<input name="Phone" class="general-input" required type="text" ng-model="preferences.user.Phone" placeholder="Phone"></label>
+							<label>First name
+							<input name="First name" class="general-input" required type="text" ng-model="preferences.user.FirstName" placeholder="George"></label>
+							<label>Last name
+							<input name="Last name" class="general-input" required type="text" ng-model="preferences.user.LastName" placeholder="Bush"></label>
+							<label>Company
+							<input name="Company" class="general-input" required type="text" ng-model="preferences.user.Company" placeholder="Apple"></label>
+							<div ng-if="preferences.SaveError" class="reset-message error" >
+								{{ preferences.SaveError }}
+							</div>
+						</div>
+						</md-card-content>
+						<md-card-actions layout="row" layout-align="end center">
+							<md-button class="orange-btn" type="submit">
+								<span ng-if="preferences.Loading"><i class="fa fa-spin fa-spinner"></i></span>
+								<span ng-if="!preferences.Loading">Save info</span>
+							</md-button>				
+						</md-card-actions>
+					</md-card>
+				</form>
+			</div>
+			<div layout="column">
+				<form autocomplete="off"  layout="row" layout-align="center center" ng-submit="preferences.changePassword()">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Change password</span>
+							</md-card-title-text>
+						</md-card-title>
+						<md-card-content>
+							<input name="New password" class="general-input" required type="password" ng-model="preferences.new_password" placeholder="New Password">
+							<input name="Confirm new password" class="general-input" required type="password" ng-model="preferences.confirm_new_password" placeholder="Confirm New Password">
+							<div ng-if="trnl.SaveError" class="reset-message error" >
+								{{ trnl.SaveError }}
+							</div>
+						</md-card-content>
+						<md-card-actions layout="row" layout-align="end center">
+							<md-button class="orange-btn" type="submit">
+								<span ng-if="preferences.Loading"><i class="fa fa-spin fa-spinner"></i></span>
+								<span ng-if="!preferences.Loading">Change password</span>
+							</md-button>				
+						</md-card-actions>
+					</md-card>
+				</form>
+			</div>
+			</div>
+
+		</div>
+	</div>
+</div>

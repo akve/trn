@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css">
 <link rel="stylesheet" type="text/css" href="/wp-content/themes/TRN/js/vendor/angular-growl.css">
 <link rel="stylesheet" type="text/css" href="/wp-content/themes/TRN/js/vendor/bootstrap.css">
-<script src="/wp-content/themes/TRN/js/Vendor/angular-growl.min.js"></script>
+<script src="/wp-content/themes/TRN/js/vendor/angular-growl.min.js"></script>
 
 
 
@@ -59,6 +59,8 @@ button.md-small.blue {background-color: #90CAF9;}
 						<option value='1' selected='row.value=="1"'>Yes</option>
 						<option value='0' selected='row.value=="0"'>No</option>
 					</select>
+					<span ng-if="row.field.type=='date'">MM/DD or MM/DD/YY</span>
+
 				</td>
 				<td><a ng-click="filter.remove($index)">remove</td>
 			</tr>

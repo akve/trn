@@ -373,7 +373,7 @@ class BUYERACCOUNT
 		$c = "SELECT * FROM trn_settings WHERE label = 'associatecode' ";
 		$code = FetchOneQuery($c);
 
-		$s = "SELECT * FROM trn_products WHERE active = 1 and Pause = 0";
+		$s = "SELECT * FROM trn_products WHERE active = 1 and Pause = 0 and archive = 0 and trn_products.seller_id not in (select id from wp_atn_sellers where blocked = 1 or Approval = 1 or Pause = 1)";
 		if (BAPO()) {
 			$s = "SELECT * FROM trn_products";
 		}

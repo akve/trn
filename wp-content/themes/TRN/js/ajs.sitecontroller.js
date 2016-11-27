@@ -284,7 +284,8 @@ function HeaderController(GetHeaderItems, postfunction, getParameterByName, $roo
 		if (data.menuitems) {
 			trnh.menu = data.menuitems;
 			$rootScope.user = data.userdata;
-			console.log($rootScope.user);
+			trnh.user = data.userdata;
+			//console.log("HEY", $rootScope.user);
 		} else {
 			trnh.menu = data;
 		}
@@ -523,8 +524,128 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 	}
 }
 
-function SellerController(postfunction, $mdDialog, $mdMedia, PercentSavings, getParameterByName, Countdown, $timeout) {
+function SellerController($q, $location, postfunction,  $scope, $mdDialog, $mdMedia, PercentSavings, getParameterByName, Countdown, $timeout, GetHeaderItems, GetSellerProfile, growl, NgTableParams) {
 	var trns = this;
+	var preferences = this;
+
+
+	var init = function(){
+		// first thing we do on load is get the products
+		GetHeaderItems(function(data) {
+			console.log("!",data);
+			trns.user = data.userdata;
+			GetSellerProfile("", function(profile) {
+					//console.log(sellerData)
+					//preferences.tmpProfile = profile;
+
+					//trns.backup = data.list;
+					//initData(data);
+					trns.sellerProfile = profile;
+					if (trns.productid)
+						trns.getUsedCoupons(trns.productid);
+
+					//trnb.BuyerProducts = data;
+					//trnb.backup = data;
+				})
+	//		console.log(preferences.user);
+			/*GetBuyerProducts("", function(data) {
+				GetBuyerProfile("", function(profile) {
+					//console.log(sellerData)
+					trnb.tmpProfile = profile;
+					trnb.backup = data.list;
+					initData(data);
+					trnb.BuyerProducts = data.list;
+					//trnb.BuyerProducts = data;
+					//trnb.backup = data;
+				});
+			});*/
+		});
+	}
+	init();
+
+
+	trns.changePassword = function(){
+
+		if (!preferences.new_password || (preferences.new_password != preferences.confirm_new_password)){
+			showStatus(growl, "Passwords do not match", "error");
+			return;
+		}
+		if (preferences.new_password.length < 8){
+			showStatus(growl, "Password should be at least 8 characters", "error");
+			return;
+		}
+		var post = jQuery.param({
+			a: 'ChangePasswordSeller',
+			password: preferences.new_password
+		});
+
+		trns.Loading = true;
+		var callback = function(data) {
+			trns.Loading = false;
+			if (!data.error) {
+				showStatus(growl, "Successfully changed. You'll need to re-login with your new password in 5 seconds", "success");
+				setTimeout(function(){
+					window.location.href = basepath + "buyer-login/";
+				},5000);
+			} else {
+				showStatus(growl, "Error: " +data.error, "error");
+			}
+			/*if (typeof data.error === 'undefined')
+				window.location.href = basepath + "buyer-homepage/";
+			else
+				trnb.LoginError = data.error;*/
+		}
+
+		postfunction(post, callback);
+	}
+
+	trns.getUsedCoupons = function(product){
+		if (!trns.sellerProfile || !trns.sellerProfile.coupons) {
+			trns.used = "";
+			return "";
+		}
+		var res = "";
+		var cnt = 0;
+		trns.sellerProfile.coupons.forEach(function(c){
+
+			if ((""+c.productid) == (""+product)) {
+				res += c.coupon + "\r\n";
+				cnt += 1;
+			}
+		})
+		//console.log(trns.sellerProfile.coupons);
+		trns.used = "Total: " + cnt + "\r\n" + res;
+	}
+	
+
+	trns.SaveSeller = function() {
+		trns.Loading = true;
+
+		var buyerO = preferences.user;
+		var buyer = {};
+		
+		var copy = ["id", "contact_email", "Phone", "FirstName", "LastName", "amazonid", "Company"];
+		for (var key in buyerO) {
+			if (copy.indexOf(key)>=0) buyer[key] = buyerO[key];
+		}
+
+		var post = jQuery.param({
+			a: 'SaveSeller',
+			seller: buyer
+		});
+
+		var callback = function(data) {
+			trns.Loading = false;
+			if (typeof data.error === 'undefined') {
+				showStatus(growl, "Successfully changed. ", "success");
+			}
+			else {
+				showStatus(growl, "Error: " +data.error, "error");
+			}
+		}
+
+		postfunction(post, callback);
+	}
 
 	trns.ASINSearch = function(asin) {
 		trns.ASINError = false;
@@ -587,6 +708,9 @@ function SellerController(postfunction, $mdDialog, $mdMedia, PercentSavings, get
 
 	trns.GetProductEdit = function() {
 		var productid = getParameterByName('productid');
+		trns.productid = productid;
+		trns.getUsedCoupons(productid);
+		console.log("USED", productid, trns.used);
 
 		if (typeof parseFloat(productid) !== 'number' || parseFloat(productid) < 1)
 			window.location.href = basepath + "seller-products/";
@@ -657,6 +781,185 @@ function SellerController(postfunction, $mdDialog, $mdMedia, PercentSavings, get
 
 		return count.length;
 	}
+
+	trns.ArchiveProduct = function(product) {
+		if (confirm("Are you sure to archive?")) {
+			var post = jQuery.param({
+				a: 'ArchiveProduct',
+				product: product.id
+			});
+
+			var callback = function(data) {
+				window.location.reload();
+			}
+
+			postfunction(post, callback);
+		}
+	}
+
+	$scope.currentMode = "sellers";
+
+
+
+	$scope.filter = {
+		fields: [],
+		add :  function(){
+			$scope.filter.possibleFields.forEach(function(f){
+				//console.log($scope.filter.addAs, f.name);
+				if (f.name == $scope.filter.addAs) {
+					$scope.filter.fields.push({field:f, condition:"=", value:""});
+				}
+			})
+			$scope.filter.addAs = "";
+		},
+		remove: function(index) {
+			$scope.filter.fields.splice(index,1);
+		},
+		possibleOptions: [
+			{name:"=", value:"="},
+			{name:">", value:">"},
+			{name:"<", value:"<"},
+			{name:"like", value:"like"}
+		],
+		addAs: "",
+		possibleFields: [],
+		buildQuery: function(){
+			var res = "1=1";
+			$scope.filter.fields.forEach(function(fld){
+				var value = fld.value;
+				if (fld.field.type=="text") {
+					value = "'" + ((fld.condition=='like')? "%":"") + value + ((fld.condition=='like')? "%":"")  + "'";
+				}
+				if (fld.field.type=="date") {
+					var v = value.split("/");
+					var y = new Date().getYear();
+					if (y>2000) y = y-2000;
+					if (y>100) y = y-100;
+					y = y+2000;
+
+					if (v.length == 3) {
+						y = parseInt(v[2]);
+						if (y<100) y = y+2000;
+					}
+					var m = parseInt(v[0]);
+					var d = parseInt(v[1]);
+					value = parseInt(new Date("" + y + "-" + m + "-" + d).getTime() / 1000);
+
+					//value = //parseInt(new Date(value).getTime() / 1000);
+				}
+				res += " AND " + fld.field.name + " " + fld.condition + " " + value;
+			});
+			return res;
+		}
+	};
+
+	$scope.rerun = function(){
+		//if ($scope.currentMode == "buyers") $scope.buyersParams.reload();
+		//if ($scope.currentMode == "sellers") 
+			$scope.sellersParams.reload();
+		//if ($scope.currentMode == "products") $scope.productsParams.reload();
+		//if ($scope.currentMode == "reviews") $scope.reviewsParams.reload();
+	}
+
+	$scope.changeMode = function(mode, skipRefresh, filterFields){
+		$scope.currentMode = mode;
+		$scope.filter.possibleFields = [
+			{name:"contact_email", title: "Buyer email", type:"text"},
+			{name:"product_name", title: "Name", type:"text"},
+			{name:"asin", title: "ASIN", type:"text"},
+			{name:"inserted", title: "Order date", type:"date"},
+			{name:"got_review", title: "Review date", type:"date"},
+			{name:"review_score", title: "Review score", type:"num"}
+		];
+		if (!filterFields) {
+			$scope.filter.fields = [];
+			var href = document.location.href;
+			if (href.indexOf("asin=") >0 ){
+				href = href.split("asin=")[1];
+				$scope.filter.fields.push({field: {name:"asin", title: "ASIN", type:"text"}, "condition":"=", "value":href});
+			}
+			//if (skipRefresh && )
+		} else {
+			filterFields.forEach(function(f){
+				$scope.filter.possibleFields.forEach(function(fp) {
+					if (fp.name == f.field) {
+						f.field = fp;
+					}
+				})
+			})
+			$scope.filter.fields = filterFields;
+		}
+		if (!skipRefresh) $scope.rerun();
+	}
+
+	$scope.getDate = function(v){
+		if (!v || v == "0") return "";
+		var d = new Date(parseInt("" + v + "000"));
+		return d.toDateString();
+		//new Date(parseInt("" + user.created + "000")).toLocalDateString()
+	}
+
+
+	$scope.exportToCsv = function(){
+		var q = $scope.gatherQuery();
+		q.mode = "csv";
+		$rootScope.loadData({action:"query",data:q},function(data){
+            var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, 'data.csv');
+			//var data = [{name: "Moroni", age: 50} /*,*/];
+			//console.log(data);
+		});
+	}
+
+	//$scope.filterSettings = ;
+
+	$scope.gatherQuery = function(params, mode){
+		if (!mode) mode = $scope.currentMode;
+		var order = params? params.orderBy(): ["id"];
+		if (order.length >0) {
+			order = order[0];
+			if (order.indexOf("+") >=0) order = order.replace("+","") + " ASC ";
+			if (order.indexOf("-") >=0) order = order.replace("-","") + " DESC ";
+		} else {
+			order = "";
+		}
+		var q = {
+			target:mode,
+			limit:params?params.count():99999,
+			start:params? (params.count() * (params.page() - 1)) : 0,
+			order: order,
+			where: $scope.filter.buildQuery()
+		}
+		return q;
+	}
+
+	$scope.onGetData = function(params, mode) {
+		var deferred = $q.defer();
+		//params.total(1);
+		var q = $scope.gatherQuery(params, mode);
+		//console.log("PARAMS", mode, $scope.currentMode );
+
+		if (mode == $scope.currentMode) {
+			q.a = "sellerQuery";
+			//postfunction(post, callback);
+			console.log(q);
+			postfunction(jQuery.param(q),function(data){
+				//var data = [{name: "Moroni", age: 50} /*,*/];
+				params.total(parseInt(data.totals));
+				console.log("?", data.totals);
+				$scope.total = data.totals;
+				$scope.avgs = data.avgs;
+				deferred.resolve(data.rows);
+				//console.log(data);
+			});
+		} else {
+			deferred.resolve([]);
+		}
+		return deferred.promise;
+    };
+	$scope.sellersParams = new NgTableParams({}, {getData:function(params) {return $scope.onGetData(params, "sellers")}});
+
+	$scope.changeMode("sellers", true);
 }
 /**
  *	Product Controller

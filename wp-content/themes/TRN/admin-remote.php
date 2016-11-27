@@ -45,7 +45,7 @@ class REMOTE {
 					(select avg(review_score) from trn_coupons c inner join trn_coupon_tracking t on t.couponid = c.id where c.productid = p.id and got_review > 0) avg_score
 
 					 FROM trn_products p
-					inner join trn.wp_atn_sellers s on p.seller_id = s.id 
+					inner join wp_atn_sellers s on p.seller_id = s.id 
 					) innertbl";
 		}
 		if ($data["target"] == "reviews") {

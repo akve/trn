@@ -23,6 +23,13 @@ class SELLERACCOUNT
 		# otherwise we're creating a new account
 		if ($this->id) {
 			# this is just an account update
+
+			# at this point they have to save an amazon id so we have to verify it
+			$where = "id = :id";
+			$u = UpdateArrayQuery("wp_atn_sellers", $this->seller, $where, array("id" => $this->atn_id));			
+
+			# now we update user email address (but that's for later when we actually make a settings area)
+			$this->id = true;
 		} else {
 			# using base wordpress function for this
 			$sanitized_user_login = sanitize_user($this->Username);
@@ -225,12 +232,15 @@ class SELLERACCOUNT
 
 			# now we handle the coupons
 			# first delete all couponse that are not being used
+			# WTF???
+			/*
 			$d = "DELETE FROm trn_coupons WHERE productid = :productid AND seller_id = :seller_id AND status = 1";
 			$vars = array(
 				"productid" => $this->productid,
 				"seller_id" => $seller['id'],
 			);
 			BasicQuery($d, $vars);
+			*/ 
 
 			# now we insert the coupons
 			$coupons = explode("\n", $this->product['SUCC']);
@@ -330,7 +340,7 @@ class SELLERACCOUNT
 		}
 
 		# now let's get a list of the products
-		$s = "SELECT id, asin, active, product_name, img_large, img_med, img_sm, description, price, discount_price, enddate FROM trn_products WHERE seller_id = :seller_id ";
+		$s = "SELECT id, asin, active, product_name, img_large, img_med, img_sm, description, price, discount_price, enddate FROM trn_products WHERE seller_id = :seller_id and archive = 0";
 		$vars = array("seller_id" => $seller['id']);
 		$products = FetchQuery($s, $vars);
 
@@ -378,6 +388,18 @@ class SELLERACCOUNT
 	{
 		$u = "UPDATE trn_products SET Pause = NOT Pause WHERE id = :id";
 		$vars = array("id" => $this->product['id']);
+		UpdateQuery($u, $vars);
+
+		$p = "SELECT * FROM trn_products WHERE id = :id";
+		$product = FetchOneQuery($p, $vars);
+
+		return $product;
+	}
+
+	public function ArchiveProduct()
+	{
+		$u = "UPDATE trn_products SET archive = 1 WHERE id = :id";
+		$vars = array("id" => $this->product);
 		UpdateQuery($u, $vars);
 
 		$p = "SELECT * FROM trn_products WHERE id = :id";
@@ -517,5 +539,120 @@ class SELLERACCOUNT
 
 		return $totime;
 	}
+
+	public function GetProfile()
+	{
+		$user = $this->isSeller();
+
+		// get used coupons:
+		$s = "SELECT ct.*,c.productid FROM trn_coupon_tracking ct
+				inner join trn_coupons c on c.id = ct.couponid
+				where c.seller_id = ". $user['id'];
+
+
+		//$s = "SELECT trn_products.*, trn_coupon_tracking.* FROM trn_coupon_tracking inner join trn_coupons on trn_coupons.id = trn_coupon_tracking.couponid  inner join trn_products on  trn_coupons.productid = trn_products.id  where buyer_id= " . $user['id'] . " order by inserted desc";
+		//echo $s;
+
+		$products = FetchQuery($s);
+		$cleaned = array();
+		foreach($products as $p => $values)
+		{
+			$cleaned[] = CleanPDO($values);
+		}
+		
+		return array("coupons" => $cleaned, "user" => $user);
+	}
+
+
+	public function query($data){
+		$vars = array();
+		$user = $this->isSeller();
+
+		//if ($data["target"] == "buyers") {
+			$sql = "select FIELDS from (SELECT ct.*, b.contact_email, p.product_name FROM trn_coupon_tracking ct
+					inner join wp_atn_buyer b on b.id = ct.buyer_id 
+					inner join trn_coupons c on c.id = ct.couponid
+					inner join trn_products p on c.productid = p.id
+					inner join wp_atn_sellers s on c.seller_id = s.id
+					where s.id = ". $user['id'] . " and p.archive = 0 
+					) innertbl
+					";
+		//}
+		// calc totals
+
+					//
+
+
+		if ($data["where"]) {
+			$sql .= " WHERE " . str_replace("\\'","'", $data["where"])  . " ";
+		}
+		if ($data["order"]) {
+			$sql .= " ORDER BY " . $data["order"] . " ";
+		}
+
+		$sqlTotal = str_replace("FIELDS", "count(*) cnt", $sql);
+		$existing = FetchOneQuery($sqlTotal, $vars);
+		$totals = $existing["cnt"];
+
+		$sql = str_replace("FIELDS", "*", $sql);
+
+		if ($data["mode"] == "csv") {
+			//header('Content-Type: text/csv; charset=utf-8');
+			//header('Content-Disposition: attachment; filename=data.csv');
+
+			// create a file pointer connected to the output stream
+			$output = fopen('php://output', 'w');
+
+			$existing = FetchQuery($sql, $vars);
+			if (count($existing) >0) {
+				$row1 = $existing[0];
+				$keys = array();
+				$row1 = CleanPDO($row1);
+				foreach($row1 as $key=>$value) {
+					$keys[] = $key;
+				}
+				fputcsv($output, $keys);
+				foreach($existing as $row) {
+					CleanPDO($row);
+					$row1 = array();
+					foreach($keys as $key) {
+						$row1[] = $row[$key];
+					}
+					fputcsv($output, $row1);
+				}
+			}
+			/*foreach($existing as $row) {
+				CleanPDO($row);
+				fputcsv($output, $row);
+			}*/
+
+			//while ($row = mysql_fetch_assoc($rows)) fputcsv($output, $row);
+		} else {
+			//$vars = array("email" => $data["a"]);
+			$avgsA = FetchQuery($sql, $vars);
+			$avgs = array("total_orders" => 0, "total_reviews" => 0, "avg_score" => 0);
+			foreach($avgsA as $row) {
+				CleanPDO($row);
+				$avgs['total_orders'] = $avgs['total_orders'] + 1;
+				if ($row["got_review"] > 0) {
+					$avgs['total_reviews'] = $avgs['total_reviews']  + 1;
+					$avgs['avg_score'] = $avgs['avg_score']  + $row["review_score"];
+				}
+			}
+			if ($avgs['total_reviews'] > 0) {
+				$avgs['avg_score'] = $avgs['avg_score']  / $avgs['total_reviews'];
+			}
+ 
+
+			if ($data["limit"]) {
+				$sql .= " LIMIT " . $data["start"] ."," . $data["limit"] . " ";
+			}
+			//$vars = array("email" => $data["a"]);
+			$existing = FetchQuery($sql, $vars);
+
+			JSONOutput(array("totals" => $totals, "avgs" => $avgs, "rows" => $existing));
+		}
+	}
+
 
 }

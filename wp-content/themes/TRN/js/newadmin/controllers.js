@@ -71,7 +71,20 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 					value = "'" + ((fld.condition=='like')? "%":"") + value + ((fld.condition=='like')? "%":"")  + "'";
 				}
 				if (fld.field.type=="date") {
-					value = parseInt(new Date(value).getTime() / 1000);
+					//value = parseInt(new Date(value).getTime() / 1000);
+					var v = value.split("/");
+					var y = new Date().getYear();
+					if (y>2000) y = y-2000;
+					if (y>100) y = y-100;
+					y = y+2000;
+
+					if (v.length == 3) {
+						y = parseInt(v[2]);
+						if (y<100) y = y+2000;
+					}
+					var m = parseInt(v[0]);
+					var d = parseInt(v[1]);
+					value = parseInt(new Date("" + y + "-" + m + "-" + d).getTime() / 1000);
 				}
 				res += " AND " + fld.field.name + " " + fld.condition + " " + value;
 			});
