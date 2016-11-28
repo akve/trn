@@ -27,10 +27,12 @@
 							<td><a ng-click="filter.remove($index)">remove</td>
 						</tr>
 					</table>
-					<a ng-click="rerun()" class="button">Run search</a> | 
+					<div class="btn-group">
+					<button ng-click="rerun()" class="filter-button" type="button" >Run search</button> | 
 					Add filter:
 					<select ng-model="filter.addAs" ng-options="option.name as option.title for option in filter.possibleFields" ng-change='filter.add()'>
 					</select> | <a ng-click="exportToCsv()">Export to CSV</a>
+					</div>
 				</div>
 				<div style="clear:both"></div>
 				<div style="padding-left:10px;margin-left:10px;border-left:1px solid #aaaaaa;margin-bottom:10px;">

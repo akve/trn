@@ -1030,6 +1030,7 @@ a:active {
 .pagination:before,
 .pagination:after {
 	/*background-color: #1a1a1a;*/
+	display: none;
 	content: "";
 	height: 52px;
 	position: absolute;
@@ -3856,4 +3857,15 @@ p > video {
 	.widecolumn {
 		padding: 0;
 	}
+}
+
+.filter-button {
+	background-color: #aaaaaa;
+}
+.filter-button:hover{
+	background-color: #CCCCCC;
+}
+input.ng-invalid { 
+    background:#F84072;
+    border: 1px #F84072 solid !important;
 }

@@ -6,6 +6,15 @@
  *
  */
 
+
+/*
+Когда пользователи отправляют форму со встроенной проверкой reCAPTCHA, вместе с прочими данными вы получаете строку "g-recaptcha-response". Чтобы узнать, прошел ли пользователь проверку, отправьте POST-запрос со следующими параметрами:
+URL: https://www.google.com/recaptcha/api/siteverify
+secret (обязательно)	6LfsIQ0UAAAAAJAwaDIIb-_CejyrWgFxZESvIrIN
+response (обязательно)	Значение "g-recaptcha-response".
+remoteip	IP-адрес конечного пользователя.
+*/
+
 class SELLERACCOUNT
 {
 	# set default id to false
@@ -31,6 +40,25 @@ class SELLERACCOUNT
 			# now we update user email address (but that's for later when we actually make a settings area)
 			$this->id = true;
 		} else {
+
+			//URL: https://www.google.com/recaptcha/api/siteverify
+			//secret (обязательно)	
+			//response (обязательно)	Значение "g-recaptcha-response".
+			//remoteip	IP-адрес конечного пользователя.
+
+			//echo $this->captcha;
+			require_once(BASE_PATH.'/modules/recaptcha/src/autoload.php'); 
+			$recaptcha = new \ReCaptcha\ReCaptcha("6LfsIQ0UAAAAAJAwaDIIb-_CejyrWgFxZESvIrIN");
+			$resp = $recaptcha->verify($this->captcha, $remoteIp);
+			if ($resp->isSuccess()) {
+			    // verified!
+			    //echo "ok";
+			} else {
+			    $this->Error = $resp->getErrorCodes();
+				return false;
+			}
+
+
 			# using base wordpress function for this
 			$sanitized_user_login = sanitize_user($this->Username);
 			$this->id = wp_create_user($sanitized_user_login, $this->Password, $this->Email);

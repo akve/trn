@@ -1,6 +1,8 @@
 <!-- load display header template via angular -->
 <div template-panel ver="Header"></div>
 <!-- Signup content -->
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <div class="ui container" ng-controller="LoginController as trnl">
 	<div layout="row" layout-padding>
 		<div flex-gt-sm="5"></div>
@@ -51,6 +53,9 @@
 				</md-card-content>
 				<md-divider></md-divider>
 				<md-card-actions layout="row" layout-align="end center">
+					<div class="g-recaptcha" data-sitekey="6LfsIQ0UAAAAABVtWbU8Ph-4_3Lh-xq736wgi-wt" style="margin:10px;"></div>
+					
+
 					<md-button flex="100" class="orange-btn" ng-click="trnl.CreateSellerAccount();">Create Account</md-button>
 				</md-card-actions>
 			</md-card>

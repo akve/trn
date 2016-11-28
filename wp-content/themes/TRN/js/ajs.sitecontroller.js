@@ -24,7 +24,7 @@ var showStatus = function(growl, message, level, title, ttl) {
  *	Controlls all login function for both buyers and sellers
  *
  */
-function LoginController(postfunction, $mdToast, getParameterByName) {
+function LoginController(postfunction, $mdToast, getParameterByName, growl) {
 	var trnl = this;
 
 	// set base values
@@ -212,6 +212,16 @@ function LoginController(postfunction, $mdToast, getParameterByName) {
 	trnl.CreateSellerAccount = function() {
 		if (typeof trnl.account === 'undefined')
 			return false;
+		if (trnl.account.Password != trnl.account.RePassword) {
+			showStatus(growl, "Passwords do not match", "error");
+			return false;
+		}
+		var captcha = grecaptcha.getResponse();
+		if (!captcha) {
+			showStatus(growl, "Please click on captcha", "error");
+			return false;
+		}
+		trnl.account.captcha = captcha;
 
 		var post = jQuery.param({
 			a: 'CreateSellerAccount',
@@ -219,8 +229,8 @@ function LoginController(postfunction, $mdToast, getParameterByName) {
 		});
 
 		var callback = function(data) {
-			if (data)
-				window.location.href = basepath + "seller-products/";
+			//if (data)
+			//	window.location.href = basepath + "seller-products/";
 		}
 
 		postfunction(post, callback);
