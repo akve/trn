@@ -123,7 +123,7 @@ class AMAZONCRON
 
 	public function SendReviewNotifications(){
 		$dt2 = time() - (86400 * 30); // max 30 days late order
-		$dt = time() - (86400 * 7); // 7 days to check
+		$dt = time() - (86400 * (TESTMODE=="true"?1:7)); // 7 days to check
 
 		$s = "SELECT b.*, p.id productid, p.product_name, p.asin, ct.last_order_check, ct.inserted, ct.trackind_id FROM trn_coupon_tracking ct
 					inner join wp_atn_buyer b on b.id = ct.buyer_id 
@@ -147,14 +147,18 @@ class AMAZONCRON
 			$timepassed = intval((time() - $user['inserted']) / 86400); 
 			echo $timepassed;
 			$template = 0;
-			if ($timepassed >= 7 && $timepassed < 10) {
+			if (TESTMODE=="true") {
 				$template = 1;
-			}
-			if ($timepassed >= 14 && $timepassed < 17) {
-				$template = 2;
-			}
-			if ($timepassed >= 20 && $timepassed < 22) {
-				$template = 3;
+			} else {
+				if ($timepassed >= 7 && $timepassed < 10) {
+					$template = 1;
+				}
+				if ($timepassed >= 14 && $timepassed < 17) {
+					$template = 2;
+				}
+				if ($timepassed >= 20 && $timepassed < 22) {
+					$template = 3;
+				}
 			}
 			var_dump(array("buyer" => $user['id'], "product" => $user["product_name"], "template" => $template, "timepassed" => $timepassed));
 

@@ -43,8 +43,8 @@
 
 				<table ng-table="sellersParams" class="table table-condensed table-bordered table-striped" show-filter="false">
 					    <tr ng-repeat="user in $data" >
-					        <td title="'Buyer email'" filter="{ contact_email: 'text'}" sortable="'contact_email'">
-					           {{user.contact_email}}</a>
+					        <td title="'Buyer id'" sortable="'buyer_id'">
+					           {{user.buyer_id}}</a>
 					            </td>
 					        <td title="'Product ID'" filter="{ amazonid: 'text'}" sortable="'asin'">
 					            {{user.asin}}</td>
@@ -89,8 +89,8 @@ TBD LATER
 								<i class="fa fa-cross" style="color:red;" alt="Email not verified" title="Email not verified"></i>
 							</span>
 							</label>
-							<label>Amazon ID
-							<input name="AmazonID" class="general-input" required type="text" ng-model="preferences.user.amazonid" placeholder="Amazon ID"></label>
+							<!--<label>Amazon ID
+							<input name="AmazonID" class="general-input" required type="text" ng-model="preferences.user.amazonid" placeholder="Amazon ID"></label>-->
 							<label>Phone
 							<input name="Phone" class="general-input" required type="text" ng-model="preferences.user.Phone" placeholder="Phone"></label>
 							<label>First name

@@ -11,7 +11,7 @@
 			<p>Enter your Amazon ID below:</p>
 		</div>
 
-		<form flex-gt-md="45" flex-md="55" flex="100" layout="row" layout-align="left center" ng-submit="trnb.SaveBuyer(trnb.buyer);">
+		<form flex-gt-md="45" flex-md="55" flex="100" layout="row" layout-align="left center" ng-submit="trnb.SaveBuyer('amazonid');">
 			<md-card flex>
 				<md-card-title>
 					<md-card-title-text>
@@ -19,7 +19,7 @@
 					</md-card-title-text>
 				</md-card-title>
 				<md-card-content>
-					<input name="amazonid" class="general-input" ng-model="trnb.buyer.amazonid" required placeholder="Amazon ID">
+					<input name="amazonid" class="general-input" ng-model="trnb.user.amazonid" required placeholder="Amazon ID">
 					<div ng-if="trnb.LoginError" class="reset-message error" >
 						{{ trnb.LoginError }}
 					</div>

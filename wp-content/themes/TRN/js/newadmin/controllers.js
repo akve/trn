@@ -186,6 +186,16 @@ trnadmin.controller('AdminController', function( $mdDialog, $q, $scope, $timeout
 			});
 	}
 
+	$scope.deleteSingle = function(user, mode) {
+		if (confirm("Really delete?")) {
+		$rootScope.loadData({action:"delete", data:{id:user.id, user_id: user.user_id, mode:mode}},function(data){
+				$rootScope.showStatus("Removed", "success");
+				$scope.rerun();
+			});
+		}
+	}
+
+
 
 	$scope.getBuyerDetails = function(buyer) {
 		$rootScope.loadData({action:"get_buyer", data:{id:buyer.id}},function(data){

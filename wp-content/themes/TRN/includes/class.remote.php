@@ -134,12 +134,13 @@ class REMOTE
 
 		# always verift in case they're trying to manipulate the javascript
 		$text->SetPhone($phone);
-		$compare = "093358354";//$text->GetVerification();
+		
+		/*$compare = "093358354";//$text->GetVerification();
 
 		if ($compare != $code) {
 			JSONOutput(false);		
 			exit();
-		}
+		}*/
 
 		# set all the variables
 		$account->SetVar("Phone", $phone);
@@ -152,9 +153,9 @@ class REMOTE
 		$result = $account->SaveAccount();
 
 		if ($result)
-			JSONOutput($result);
+			JSONOutput(array("status" => "ok", "result" => $result));
 		else
-			JSONOutput(false);
+			JSONOutput(array("status" => "error", "error" => $account->Error));
 	}
 
 	public function SaveBuyer()

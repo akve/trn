@@ -47,7 +47,7 @@ class SELLERACCOUNT
 			//remoteip	IP-адрес конечного пользователя.
 
 			//echo $this->captcha;
-			require_once(BASE_PATH.'/modules/recaptcha/src/autoload.php'); 
+			/*require_once(BASE_PATH.'/modules/recaptcha/src/autoload.php'); 
 			$recaptcha = new \ReCaptcha\ReCaptcha("6LfsIQ0UAAAAAJAwaDIIb-_CejyrWgFxZESvIrIN");
 			$resp = $recaptcha->verify($this->captcha, $remoteIp);
 			if ($resp->isSuccess()) {
@@ -56,7 +56,7 @@ class SELLERACCOUNT
 			} else {
 			    $this->Error = $resp->getErrorCodes();
 				return false;
-			}
+			}*/
 
 
 			# using base wordpress function for this
@@ -368,7 +368,7 @@ class SELLERACCOUNT
 		}
 
 		# now let's get a list of the products
-		$s = "SELECT id, asin, active, product_name, img_large, img_med, img_sm, description, price, discount_price, enddate FROM trn_products WHERE seller_id = :seller_id and archive = 0";
+		$s = "SELECT id, asin, active, Pause, product_name, img_large, img_med, img_sm, description, price, discount_price, enddate FROM trn_products WHERE seller_id = :seller_id and archive = 0";
 		$vars = array("seller_id" => $seller['id']);
 		$products = FetchQuery($s, $vars);
 
@@ -597,7 +597,7 @@ class SELLERACCOUNT
 		$user = $this->isSeller();
 
 		//if ($data["target"] == "buyers") {
-			$sql = "select FIELDS from (SELECT ct.*, b.contact_email, p.product_name FROM trn_coupon_tracking ct
+			$sql = "select FIELDS from (SELECT ct.*, p.product_name FROM trn_coupon_tracking ct
 					inner join wp_atn_buyer b on b.id = ct.buyer_id 
 					inner join trn_coupons c on c.id = ct.couponid
 					inner join trn_products p on c.productid = p.id

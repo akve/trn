@@ -120,7 +120,9 @@ class PHONEVERIFY
 		$gateway_username = $this->gatewayssid; // id
 		$gateway_password = $this->gatewaytoken; // token
 
-		return $this->VerficiationCode;
+		if (ISLOCAL == "true") {
+			return $this->VerficiationCode;
+		}
 						
 		// Twilio.
 		$url = "https://api.twilio.com/2010-04-01/Accounts/".$this->gatewayssid."/SMS/Messages";

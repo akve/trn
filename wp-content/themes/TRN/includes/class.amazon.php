@@ -10,9 +10,9 @@
 Class AMAZON
 {
 	# private variables that will be used to connect
-	private $AssociateID = "Strolls20-20";// "aint0e-20";//"dowmini-20";
-	private $AWSKeyID = "AKIAJXX7LE4RRPUHHWQA";//"AKIAIYZVWG6ITPXD2SNA";//"AKIAJK6D2KO34SNIMCBQ";
-	private $AWSSecretKey = "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"; //"7VncBBsZ69WGAFagaxZAW7GIEWLkq5U/sE3MOU1S";//"vLo1GMjUs02v4UQtQqalT/aWjkQB6qPgY5UZZkDt";
+	private $AssociateID = AMZN_ASSOCIATE; 
+	private $AWSKeyID = AMZN_KEY;
+	private $AWSSecretKey = AMZN_SECRET;
 	private $AWShost = "webservices.amazon.com";
 	private $AWSuri = "/onca/xml";
 	private $Version = "2011-08-01";

@@ -3866,6 +3866,6 @@ p > video {
 	background-color: #CCCCCC;
 }
 input.ng-invalid { 
-    background:#F84072;
+ /*   background:#F84072;*/
     border: 1px #F84072 solid !important;
 }

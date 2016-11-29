@@ -57,8 +57,8 @@ class BUYERACCOUNT
 			$sanitized_user_login = sanitize_user($this->Username);
 			$this->id = wp_create_user($sanitized_user_login, $this->Password, $this->Email);
 
-			if (!$this->id) {
-				$this->Error = "Error Creating the account";
+			if (is_wp_error($this->id)) {
+				$this->Error = "Error Creating the account: " .  $this->id->get_error_message();
 				return false;
 			}
 

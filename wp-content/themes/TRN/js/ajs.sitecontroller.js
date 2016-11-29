@@ -173,10 +173,13 @@ function LoginController(postfunction, $mdToast, getParameterByName, growl) {
 
 		var callback = function(data) {
 			trnl.CreateAccountLoading = false;
-			if (data)
-				window.location.href = basepath + "buyer-homepage/?new=" + data;
-			else
-				trnl.CreateAccountError = true;
+			if (data.status=="ok")
+				window.location.href = basepath + "buyer-homepage/?new=" + data.result;
+			else {
+				showStatus(growl, data.error, "error");
+				//trnl.CreateAccountError = true;
+			}
+				
 		}
 
 		trnl.CreateAccountLoading = true;
@@ -334,6 +337,7 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 		if (preferences.tmpProfile.products && preferences.tmpProfile.products.length >0) {
 			var reviewSum = 0;
 			var reviewNum = 0;
+			//console.log("!", preferences.tmpProfile.products)
 			preferences.tmpProfile.products.forEach(function(product){
 				product.review_score = parseInt(product.review_score);
 				product.got_review = parseInt(product.got_review);
@@ -370,13 +374,14 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 		// first thing we do on load is get the products
 		GetHeaderItems(function(data) {
 			preferences.user = data.userdata;
+			trnb.buyer = data.userdata;
 	//		console.log(preferences.user);
 			GetBuyerProducts("", function(data) {
 				GetBuyerProfile("", function(profile) {
 					//console.log(sellerData)
 					trnb.tmpProfile = profile;
 					trnb.backup = data.list;
-					initData(data);
+					initData(data.list);
 					trnb.BuyerProducts = data.list;
 					//trnb.BuyerProducts = data;
 					//trnb.backup = data;
@@ -460,7 +465,7 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 	}
 	
 
-	trnb.SaveBuyer = function() {
+	trnb.SaveBuyer = function(source) {
 		trnb.Loading = true;
 
 		var buyerO = preferences.user;
@@ -479,7 +484,13 @@ function BuyerController(postfunction, GetBuyerProducts, GetBuyerProfile, GetHea
 		var callback = function(data) {
 			trnb.Loading = false;
 			if (typeof data.error === 'undefined') {
-				showStatus(growl, "Successfully changed. ", "success");
+				showStatus(growl, "Successfully set.", "success");
+				if (source == "amazonid") {
+					setTimeout(
+						function(){
+							window.location.href = basepath + "buyer-homepage/";
+						}, 1000);
+				}
 			}
 			else {
 				showStatus(growl, "Error: " +data.error, "error");
@@ -874,7 +885,7 @@ function SellerController($q, $location, postfunction,  $scope, $mdDialog, $mdMe
 	$scope.changeMode = function(mode, skipRefresh, filterFields){
 		$scope.currentMode = mode;
 		$scope.filter.possibleFields = [
-			{name:"contact_email", title: "Buyer email", type:"text"},
+			{name:"buyer_id", title: "Buyer id", type:"num"},
 			{name:"product_name", title: "Name", type:"text"},
 			{name:"asin", title: "ASIN", type:"text"},
 			{name:"inserted", title: "Order date", type:"date"},

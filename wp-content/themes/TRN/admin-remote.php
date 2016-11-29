@@ -140,6 +140,22 @@ class REMOTE {
 
 	}
 
+
+	public function delete($data) {
+
+		# delete the buyer from the the buyer table
+		$vars = array("id" => $data['id']);
+		$db = "DELETE FROM " . ($data["mode"] == "buyer" ? "wp_atn_buyer" : "wp_atn_sellers") . " WHERE id = :id";
+		$db = UpdateQuery($db, $vars);
+
+		# delete the buyer from the user table
+		$vars = array("id" => $data['user_id']);
+		$du = "DELETE FROM wp_users WHERE id = :id ";
+		$du = UpdateQuery($du, $vars);
+		JSONOutput(array("status" => "OK"));
+
+	}
+
 	public function get_buyer($data){
 		$s = "SELECT trn_products.*, trn_coupon_tracking.* FROM trn_coupon_tracking inner join trn_coupons on trn_coupons.id = trn_coupon_tracking.couponid  inner join trn_products on  trn_coupons.productid = trn_products.id  where buyer_id= " . $data['id'] . " order by inserted desc";
 		//echo $s;

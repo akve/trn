@@ -96,6 +96,9 @@ button.md-small.blue {background-color: #90CAF9;}
 		        <td title="'Status'">
 		        	<a ng-click='changeBuyerState(user.id, {blocked:(user.blocked=="1"?0:1)})'>{{user.blocked == "0"?"Active":"Inactive"}}</a> 
 		        </td>
+		        <td title="''">
+		        	<a ng-click='deleteSingle(user, "buyer")'><i class='fa fa-remove' style='color:red'></i></a> 
+		        </td>
 		    </tr>
 	</table>
 	</div>
@@ -112,8 +115,6 @@ button.md-small.blue {background-color: #90CAF9;}
 	           {{user.Company}}</td>
 	       <td title="'Phone'" sortable="'Phone'">
 	           {{user.Phone}}</td>
-	       <td title="'ASIN'" sortable="'amazonid'">
-	           {{user.amazonid}}</td>
 	       <td title="'Created'" sortable="'created'">
 	           {{getDate(user.created)}}</td>
 	       <td title="'Blocked'" sortable="'blocked'">
@@ -123,6 +124,9 @@ button.md-small.blue {background-color: #90CAF9;}
 	           <a ng-click='changeSellerState(user.id, {Approval:(user.Approval=="1"?0:1)})'>{{user.Approval == "0"?"Not Approved":"Approved"}}</a></td>
 	       <td title="'Paused'" sortable="'Pause'">
 	           <a ng-click='changeSellerState(user.id, {Pause:(user.Pause=="1"?0:1)})'>{{user.Pause == "0"?"OK":"Paused"}}</a></td>
+	        <td title="''">
+	        	<a ng-click='deleteSingle(user, "seller")'><i class='fa fa-remove' style='color:red'></i></a> 
+	        </td>
 	       </tr>
 	</table>
 	</div>
@@ -155,8 +159,8 @@ button.md-small.blue {background-color: #90CAF9;}
 	           {{user.used_coupons}}</td>
 	       <td title="'Avg score'" sortable="'avg_score'">
 	           {{user.avg_score}}</td>
-	       <td title="'Force stop'" sortable="'active'">
-	           <a ng-click='changeProductState(user.id, {Pause:(user.active=="1"?0:1)})'>{{user.active == "1" ? "Active":"Inactive"}}</a>
+	       <td title="'Archive'" sortable="'archive'">
+	           <a ng-click='changeProductState(user.id, {archive:(user.archive=="1"?0:1)})'>{{user.archive == "1" ? "Archived":"ok"}}</a>
 	           </td>
    	       <td title="'Paused'" sortable="'Pause'">
            		<a ng-click='changeProductState(user.id, {Pause:(user.Pause=="1"?0:1)})'>{{user.Pause == "0"?"OK":"Paused"}}</a></td>

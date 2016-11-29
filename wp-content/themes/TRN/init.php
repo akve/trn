@@ -5,7 +5,7 @@
 
 //define some basics
 //error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 
 session_start();
 date_default_timezone_set('America/New_York');
@@ -48,10 +48,14 @@ function BasicQuery($s, $vars = array())
 	$q = $db->prepare($s);
 
 	# bind all variables the proper way
-	foreach ($vars as $k => &$v)
-	{
-		$q->bindParam(':'.$k, $v);
-	}
+	//if ($vars) {
+	try {
+		foreach ($vars as $k => &$v)
+		{
+			$q->bindParam(':'.$k, $v);
+		}
+	}catch(Exception $e) {}	
+	//}
 
 	if (!$q->execute()) {
 		echo "error -> ".RD($q->errorInfo()); exit();
