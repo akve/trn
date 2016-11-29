@@ -12,7 +12,7 @@ date_default_timezone_set('America/New_York');
 ini_get('date.timezone');
 
 //lets define some constants
-define('BASE_URL', 'http://localhost/');
+define('BASE_URL', 'http://dev.trustreviewnetwork.com/');
 define('BASE_PATH', dirname(__FILE__));
 define('CLASS_PATH', dirname(__FILE__)."/includes/");
 define('TEMPLATE_PATH',dirname(__FILE__)."/templates/");
